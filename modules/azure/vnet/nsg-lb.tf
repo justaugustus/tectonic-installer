@@ -2,6 +2,7 @@ resource "azurerm_network_security_group" "api" {
   name                = "tectonic-cluster-${var.tectonic_cluster_name}-api-nsg"
   location            = "${var.location}"
   resource_group_name = "tectonic-cluster-${var.tectonic_cluster_name}"
+  #depends_on          = ["azurerm_resource_group.tectonic_cluster"]
 }
 
 resource "azurerm_network_security_rule" "api_egress" {
@@ -38,6 +39,7 @@ resource "azurerm_network_security_group" "console" {
   name                = "tectonic-cluster-${var.tectonic_cluster_name}-console-nsg"
   location            = "${var.location}"
   resource_group_name = "tectonic-cluster-${var.tectonic_cluster_name}"
+  #depends_on          = ["azurerm_resource_group.tectonic_cluster"]
 }
 
 resource "azurerm_network_security_rule" "console_egress" {
