@@ -16,6 +16,7 @@ resource "azurerm_network_security_rule" "api_egress" {
   destination_address_prefix  = "*"
   resource_group_name         = "tectonic-cluster-${var.tectonic_cluster_name}"
   network_security_group_name = "tectonic-cluster-${var.tectonic_cluster_name}-api-nsg"
+  depends_on                  = ["azurerm_network_security_group.api"]
 }
 
 resource "azurerm_network_security_rule" "api_ingress_https" {
@@ -30,6 +31,7 @@ resource "azurerm_network_security_rule" "api_ingress_https" {
   destination_address_prefix  = "*"
   resource_group_name         = "tectonic-cluster-${var.tectonic_cluster_name}"
   network_security_group_name = "tectonic-cluster-${var.tectonic_cluster_name}-api-nsg"
+  depends_on                  = ["azurerm_network_security_group.api"]
 }
 
 resource "azurerm_network_security_group" "console" {
@@ -50,6 +52,7 @@ resource "azurerm_network_security_rule" "console_egress" {
   destination_address_prefix  = "*"
   resource_group_name         = "tectonic-cluster-${var.tectonic_cluster_name}"
   network_security_group_name = "tectonic-cluster-${var.tectonic_cluster_name}-console-nsg"
+  depends_on                  = ["azurerm_network_security_group.console"]
 }
 
 resource "azurerm_network_security_rule" "console_ingress_https" {
@@ -64,6 +67,7 @@ resource "azurerm_network_security_rule" "console_ingress_https" {
   destination_address_prefix  = "*"
   resource_group_name         = "tectonic-cluster-${var.tectonic_cluster_name}"
   network_security_group_name = "tectonic-cluster-${var.tectonic_cluster_name}-console-nsg"
+  depends_on                  = ["azurerm_network_security_group.console"]
 }
 
 resource "azurerm_network_security_rule" "console_ingress_http" {
@@ -78,4 +82,5 @@ resource "azurerm_network_security_rule" "console_ingress_http" {
   destination_address_prefix  = "*"
   resource_group_name         = "tectonic-cluster-${var.tectonic_cluster_name}"
   network_security_group_name = "tectonic-cluster-${var.tectonic_cluster_name}-console-nsg"
+  depends_on                  = ["azurerm_network_security_group.console"]
 }
