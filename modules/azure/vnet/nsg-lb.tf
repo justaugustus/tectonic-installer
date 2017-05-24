@@ -1,6 +1,6 @@
 resource "azurerm_network_security_group" "api" {
   name                = "tectonic-cluster-${var.tectonic_cluster_name}-api-nsg"
-  location            = "${var.tectonic_azure_location}"
+  location            = "${var.location}"
   resource_group_name = "tectonic-cluster-${var.tectonic_cluster_name}"
 }
 
@@ -34,7 +34,7 @@ resource "azurerm_network_security_rule" "api_ingress_https" {
 
 resource "azurerm_network_security_group" "console" {
   name                = "tectonic-cluster-${var.tectonic_cluster_name}-console-nsg"
-  location            = "${var.tectonic_azure_location}"
+  location            = "${var.location}"
   resource_group_name = "tectonic-cluster-${var.tectonic_cluster_name}"
 }
 
