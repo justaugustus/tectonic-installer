@@ -61,36 +61,32 @@ module "tectonic" {
   master_count      = "${var.tectonic_master_count}"
 }
 
-// TODO: Revisit
+resource "null_resource" "tectonic" {
+  depends_on = ["module.tectonic", "module.masters"]
 
-# resource "null_resource" "tectonic" {
-#   depends_on = ["module.tectonic", "module.masters"]
+  # We can't SSH into the proxy, so we select the first master node to copy
+  # the cluster assets and start Tectonic.
+  triggers {
+    api-endpoint = "${module.masters.ip_address[0]}"
+  }
 
+  connection {
+    host = "${module.masters.ip_address[0]}"
+    user  = "core"
+    agent = true
+  }
 
-#   triggers {
-#     api-endpoint = "${var.tectonic_azure_use_custom_fqdn == "true" ? "${var.tectonic_cluster_name}-k8s.${var.tectonic_base_domain}" : module.masters.api_external_fqdn}"
-#   }
+  provisioner "file" {
+    source      = "./generated"
+    destination = "$HOME/tectonic"
+  }
 
-
-#   connection {
-#     host  = "${var.tectonic_azure_use_custom_fqdn == "true" ? "${var.tectonic_cluster_name}-k8s.${var.tectonic_base_domain}" : module.masters.api_external_fqdn}"
-#     user  = "core"
-#     agent = true
-#   }
-
-
-#   provisioner "file" {
-#     source      = "${path.cwd}/generated"
-#     destination = "$HOME/tectonic"
-#   }
-
-
-#   provisioner "remote-exec" {
-#     inline = [
-#       "sudo mkdir -p /opt",
-#       "sudo rm -rf /opt/tectonic",
-#       "sudo mv /home/core/tectonic /opt/",
-#       "sudo systemctl start tectonic",
-#     ]
-#   }
-# }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /opt",
+      "sudo rm -rf /opt/tectonic",
+      "sudo mv /home/core/tectonic /opt/",
+      "sudo systemctl start tectonic",
+    ]
+  }
+}
