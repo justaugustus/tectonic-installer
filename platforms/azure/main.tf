@@ -178,12 +178,3 @@ module "dns" {
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
 }
-
-module "jumpbox" {
-  source = "../../modules/azure/jumpbox"
-
-  location            = "${var.tectonic_azure_location}"
-  resource_group_name = "${module.resource_group.name}"
-  public_ssh_key      = "${var.tectonic_azure_ssh_key}"
-  subnet              = "${module.vnet.master_subnet}"
-}
