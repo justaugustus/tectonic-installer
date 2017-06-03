@@ -10,10 +10,14 @@ This document gives an overview of variables used in the Azure platform of the T
 | tectonic_azure_create_dns_zone | If set to true, create an Azure DNS zone | string | `true` |
 | tectonic_azure_dns_resource_group |  | string | `tectonic-dns-group` |
 | tectonic_azure_etcd_vm_size | Instance size for the etcd node(s). Example: Standard_DS2_v2. | string | `Standard_DS2_v2` |
+| tectonic_azure_external_etcd_nsg_name | (optional) The name of the external Network Security Group used for etcd. This depends on `tectonic_azure_external_nsg_rsg_name` to also be specified. | string | `` |
+| tectonic_azure_external_master_nsg_name | (optional) The name of the external Network Security Group used for masters. This depends on `tectonic_azure_external_nsg_rsg_name` to also be specified. | string | `` |
 | tectonic_azure_external_master_subnet_id | (optional) Subnet ID within an existing VNet to deploy master nodes into. Required to use an existing VNet.<br><br>Example: the subnet ID starts with `"/subscriptions/{subscriptionId}"` or `"/providers/{resourceProviderNamespace}"`. | string | `` |
+| tectonic_azure_external_nsg_rsg_name | (optional) The name of the resource group of the external Network Security Group used. This is required if specifying `tectonic_external_etcd_nsg_name`, `tectonic_external_master_nsg_name`, and/or `tectonic_external_worker_nsg_name`, | string | `` |
 | tectonic_azure_external_rsg_name | Pre-existing resource group to use as parent for cluster resources. | string | `` |
 | tectonic_azure_external_vnet_id | ID of an existing Virtual Network to launch nodes into. Example: VNet1. Leave blank to create a new Virtual Network. | string | `` |
 | tectonic_azure_external_vnet_name | Pre-existing virtual network to create cluster into. | string | `` |
+| tectonic_azure_external_worker_nsg_name | (optional) The name of the external Network Security Group used for workers. This depends on `tectonic_azure_external_nsg_rsg_name` to also be specified. | string | `` |
 | tectonic_azure_external_worker_subnet_id | (optional) Subnet ID within an existing VNet to deploy worker nodes into. Required to use an existing VNet.<br><br>Example: the subnet ID starts with `"/subscriptions/{subscriptionId}"` or `"/providers/{resourceProviderNamespace}"`. | string | `` |
 | tectonic_azure_image_reference | (optional) Specifies an image map with the following keys: `publisher`, `offer`, `sku`, `version` | map | `<map>` |
 | tectonic_azure_location |  | string | - |
@@ -22,9 +26,7 @@ This document gives an overview of variables used in the Azure platform of the T
 | tectonic_azure_use_custom_fqdn | (optional) If set to true, assemble the FQDN from the configuration. Otherwise, use the FQDN set up by Azure. | string | `false` |
 | tectonic_azure_vnet_cidr_block | Block of IP addresses used by the Resource Group. This should not overlap with any other networks, such as a private datacenter connected via ExpressRoute. | string | `10.0.0.0/16` |
 | tectonic_azure_worker_vm_size | Instance size for the worker node(s). Example: Standard_DS2_v2. | string | `Standard_DS2_v2` |
-| tectonic_enable_ssh_external | Specifies if SSH access should be allowed from external networks | string | `false` |
 | tectonic_ssh_key |  | string | `` |
 | tectonic_ssh_network_ext | (optional) Network (external) to allow SSH access from. Maps to `source_address_prefix` in Azure. Defaults to `*`. Can be external to Azure environment. Allowed values: [network CIDR (i.e., 10.0.0.0/16) | `VirtualNetwork` | `Internet` | `*` ] | string | `*` |
 | tectonic_ssh_network_int | Network (internal) to allow SSH access from. Maps to `source_address_prefix` in Azure. Defaults to `VirtualNetwork`. Should be internal to Azure environment. Allowed values: [network CIDR (i.e., 10.0.0.0/16) | `VirtualNetwork` | `Internet` | `*` ] | string | `VirtualNetwork` |
-| tectonic_use_jumpbox | (optional) Specifies whether a jumpbox should be created to manage cluster nodes. Experimental - DO NOT USE | string | `false` |
 

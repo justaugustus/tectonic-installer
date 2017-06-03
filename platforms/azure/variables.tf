@@ -7,13 +7,6 @@ EOF
   default = "1.0"
 }
 
-# TODO: Add descriptions for SSH vars
-variable "tectonic_enable_ssh_external" {
-  type        = "string"
-  description = "Specifies if SSH access should be allowed from external networks"
-  default     = "false"
-}
-
 variable "tectonic_ssh_network_int" {
   type = "string"
 
@@ -36,18 +29,6 @@ Allowed values: [network CIDR (i.e., 10.0.0.0/16) | `VirtualNetwork` | `Internet
 EOF
 
   default = "*"
-}
-
-# TODO: Check if similar var exists for AWS
-variable "tectonic_use_jumpbox" {
-  type = "string"
-
-  description = <<EOF
-(optional) Specifies whether a jumpbox should be created to manage cluster nodes.
-Experimental - DO NOT USE
-EOF
-
-  default = "false"
 }
 
 variable "tectonic_azure_dns_resource_group" {
@@ -166,25 +147,46 @@ EOF
 }
 
 variable "tectonic_azure_external_nsg_rsg_name" {
-  type        = "string"
-  description = "(optional)"
-  default     = ""
+  type = "string"
+
+  description = <<EOF
+(optional) The name of the resource group of the external Network Security
+Group used. This is required if specifying `tectonic_external_etcd_nsg_name`,
+`tectonic_external_master_nsg_name`, and/or `tectonic_external_worker_nsg_name`,
+EOF
+
+  default = ""
 }
 
 variable "tectonic_azure_external_etcd_nsg_name" {
-  type        = "string"
-  description = "(optional)"
-  default     = ""
+  type = "string"
+
+  description = <<EOF
+(optional) The name of the external Network Security Group used for etcd. This
+depends on `tectonic_azure_external_nsg_rsg_name` to also be specified.
+EOF
+
+  default = ""
 }
 
 variable "tectonic_azure_external_master_nsg_name" {
-  type        = "string"
-  description = "(optional)"
-  default     = ""
+  type = "string"
+
+  description = <<EOF
+(optional) The name of the external Network Security Group used for masters. This
+depends on `tectonic_azure_external_nsg_rsg_name` to also be specified.
+EOF
+
+  default = ""
 }
 
 variable "tectonic_azure_external_worker_nsg_name" {
-  type        = "string"
-  description = "(optional)"
-  default     = ""
+  type = "string"
+
+  description = <<EOF
+(optional) The name of the external Network Security Group used for workers. This
+depends on `tectonic_azure_external_nsg_rsg_name` to also be specified.
+EOF
+
+  default = ""
 }
