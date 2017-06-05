@@ -102,8 +102,9 @@ module "masters" {
 
   master_count                 = "${var.tectonic_master_count}"
   base_domain                  = "${var.tectonic_base_domain}"
-  cluster_name                 = "${var.tectonic_cluster_name}"
   cluster_id                   = "${module.tectonic.cluster_id}"
+  cluster_prefix               = "${module.tectonic.prefix}"
+  cluster_name                 = "${module.tectonic.name}"
   public_ssh_key               = "${var.tectonic_azure_ssh_key}"
   virtual_network              = "${module.vnet.vnet_id}"
   network_interface_ids        = "${module.vnet.master_network_interface_ids}"
@@ -167,8 +168,8 @@ module "dns" {
   console_ip_addresses = "${module.vnet.console_ip_addresses}"
 
   base_domain  = "${var.tectonic_base_domain}"
-  cluster_name = "${var.tectonic_cluster_name}"
   cluster_id   = "${module.tectonic.cluster_id}"
+  cluster_name = "${module.tectonic.name}"
 
   location             = "${var.tectonic_azure_location}"
   external_dns_zone_id = "${var.tectonic_azure_external_dns_zone_id}"
