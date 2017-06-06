@@ -101,7 +101,7 @@ variable "tectonic_azure_vnet_cidr_block" {
 
   description = <<EOF
 (optional) Range of IP addresses assigned to the Virtual Network in which the cluster nodes run.
-This should not overlap with any other networks, such as the Kubernetes cluster (pod) range, 
+This should not overlap with any other networks, such as the Kubernetes cluster (pod) range,
 service range or a private datacenter connected via ExpressRoute."
 EOF
 }
@@ -250,4 +250,25 @@ variable "tectonic_azure_client_secret" {
   type = "string"
 
   description = "The client secret to use."
+}
+
+variable "tectonic_azure_extra_tags" {
+  type = "map"
+
+  description = <<EOF
+(optional) A map of extra Azure tags to be applied to created resources.
+[CAVEAT] Tags MUST NOT contain reserved characters '<,>,%,&,\,?,/' or control characters.
+EOF
+
+  default = {}
+}
+
+variable "tectonic_azure_create_nsg_rules" {
+  description = <<EOF
+If set to true, all required rules will be created for all Network
+Security Groups. Otherwise, no rules are added to the NSGs and are expected
+to already exist.
+EOF
+
+  default = true
 }
