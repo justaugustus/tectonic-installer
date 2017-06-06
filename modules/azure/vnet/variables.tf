@@ -108,3 +108,7 @@ variable "worker_count" {
 variable "extra_tags" {
   type = "map"
 }
+
+variable "create_nsg_rules" {
+  default = true
+}
