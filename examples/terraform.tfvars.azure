@@ -18,6 +18,11 @@ tectonic_azure_client_secret = ""
 // for available environments.
 // tectonic_azure_cloud_environment = "AZUREPUBLICCLOUD"
 
+// If set to true, all required rules will be created for all Network
+// Security Groups. Otherwise, no rules are added to the NSGs and are expected
+// to already exist.
+tectonic_azure_create_nsg_rules = true
+
 // (optional) Storage account type for the etcd node(s). Example: Premium_LRS.
 // Using Premium storage is constrained by the of instance specified in 'tectonic_azure_etcd_vm_size'.
 // See https://docs.microsoft.com/en-us/azure/storage/storage-premium-storage#supported-vms
@@ -119,7 +124,7 @@ tectonic_azure_ssh_key = ""
 // tectonic_azure_ssh_network_internal = "VirtualNetwork"
 
 // (optional) Range of IP addresses assigned to the Virtual Network in which the cluster nodes run.
-// This should not overlap with any other networks, such as the Kubernetes cluster (pod) range, 
+// This should not overlap with any other networks, such as the Kubernetes cluster (pod) range,
 // service range or a private datacenter connected via ExpressRoute."
 // tectonic_azure_vnet_cidr_block = "10.0.0.0/16"
 
