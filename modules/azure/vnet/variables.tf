@@ -102,5 +102,5 @@ variable "worker_count" {
 }
 
 variable "create_nsg_rules" {
-  default = false
+  default = true
 }
