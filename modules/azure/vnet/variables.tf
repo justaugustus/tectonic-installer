@@ -110,5 +110,5 @@ variable "extra_tags" {
 }
 
 variable "create_nsg_rules" {
-  default = false
+  default = true
 }
