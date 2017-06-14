@@ -104,3 +104,11 @@ variable "worker_count" {
 variable "create_nsg_rules" {
   default = true
 }
+
+variable "subnet" {
+  type = "string"
+}
+
+variable "base_domain" {
+  type = "string"
+}
