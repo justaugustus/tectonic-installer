@@ -75,3 +75,7 @@ output "ingress_fqdn" {
 output "api_fqdn" {
   value = "${azurerm_public_ip.api_ip.fqdn}"
 }
+
+output "etcd_public_ip" {
+  value = "${azurerm_lb.tectonic_etcd_lb.frontend_ip_configuration.0.private_ip_address}"
+}
