@@ -104,3 +104,7 @@ variable "container_image" {
 variable "extra_tags" {
   type = "map"
 }
+
+variable "role" {
+  type = "string"
+}

@@ -75,6 +75,9 @@ module "etcd" {
   tls_peer_key_pem   = "${module.bootkube.etcd_peer_key_pem}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  cluster_prefix        = "${module.tectonic.prefix}"
+  role                  = "etcd"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/4084
@@ -126,6 +129,9 @@ module "masters" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  use_custom_fqdn = "${var.tectonic_azure_use_custom_fqdn}"
+  role            = "master"
 }
 
 module "workers" {
@@ -154,6 +160,8 @@ module "workers" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  role                         = "worker"
 }
 
 module "dns" {

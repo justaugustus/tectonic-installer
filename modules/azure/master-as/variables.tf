@@ -120,3 +120,7 @@ variable "cl_channel" {
 variable "extra_tags" {
   type = "map"
 }
+
+variable "role" {
+  type = "string"
+}
