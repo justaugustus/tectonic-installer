@@ -59,8 +59,9 @@ module "etcd" {
 
   etcd_count            = "${var.tectonic_experimental ? 0 : max(var.tectonic_etcd_count, 1)}"
   base_domain           = "${var.tectonic_base_domain}"
-  cluster_name          = "${var.tectonic_cluster_name}"
   cluster_id            = "${module.tectonic.cluster_id}"
+  cluster_prefix        = "${module.tectonic.prefix}"
+  cluster_name          = "${module.tectonic.name}"
   public_ssh_key        = "${var.tectonic_azure_ssh_key}"
   network_interface_ids = "${module.vnet.etcd_network_interface_ids}"
   versions              = "${var.tectonic_versions}"
