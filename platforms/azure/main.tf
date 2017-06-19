@@ -59,8 +59,9 @@ module "etcd" {
 
   etcd_count            = "${var.tectonic_experimental ? 0 : max(var.tectonic_etcd_count, 1)}"
   base_domain           = "${var.tectonic_base_domain}"
-  cluster_name          = "${var.tectonic_cluster_name}"
   cluster_id            = "${module.tectonic.cluster_id}"
+  cluster_prefix        = "${module.tectonic.prefix}"
+  cluster_name          = "${module.tectonic.name}"
   public_ssh_key        = "${var.tectonic_azure_ssh_key}"
   network_interface_ids = "${module.vnet.etcd_network_interface_ids}"
   versions              = "${var.tectonic_versions}"
@@ -76,6 +77,9 @@ module "etcd" {
   tls_peer_key_pem   = "${module.bootkube.etcd_peer_key_pem}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  cluster_prefix        = "${module.tectonic.prefix}"
+  role                  = "etcd"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/4084
@@ -128,6 +132,9 @@ module "masters" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  use_custom_fqdn = "${var.tectonic_azure_use_custom_fqdn}"
+  role            = "master"
 }
 
 module "workers" {
@@ -157,6 +164,8 @@ module "workers" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
+
+  role                         = "worker"
 }
 
 module "dns" {
