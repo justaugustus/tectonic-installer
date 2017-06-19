@@ -61,7 +61,7 @@ resource "random_id" "storage" {
 
 resource "azurerm_storage_account" "etcd_storage" {
   count               = "${var.etcd_count > 0 ? 1 : 0}"
-  name                = "etcd${random_id.storage.hex}"
+  name                = "${var.cluster_name}${random_id.storage.hex}etcd"
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
   account_type        = "${var.storage_account_type}"
