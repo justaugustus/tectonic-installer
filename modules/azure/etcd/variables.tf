@@ -91,3 +91,11 @@ variable "tls_peer_crt_pem" {
 variable "container_image" {
   type = "string"
 }
+
+variable "extra_tags" {
+  type = "map"
+}
+
+variable "role" {
+  type = "string"
+}

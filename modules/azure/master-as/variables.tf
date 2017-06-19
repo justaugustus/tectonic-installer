@@ -107,3 +107,7 @@ variable "versions" {
 variable "cl_channel" {
   type = "string"
 }
+
+variable "extra_tags" {
+  type = "map"
+}
