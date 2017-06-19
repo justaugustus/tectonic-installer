@@ -67,6 +67,9 @@ module "etcd" {
   tls_client_key_pem = "${module.bootkube.etcd_client_key_pem}"
   tls_peer_crt_pem   = "${module.bootkube.etcd_peer_crt_pem}"
   tls_peer_key_pem   = "${module.bootkube.etcd_peer_key_pem}"
+
+  cluster_prefix        = "${module.tectonic.prefix}"
+  role                  = "etcd"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/4084
@@ -115,6 +118,9 @@ module "masters" {
   tectonic_service_disabled    = "${var.tectonic_vanilla_k8s}"
   versions                     = "${var.tectonic_versions}"
   cl_channel                   = "${var.tectonic_cl_channel}"
+
+  use_custom_fqdn = "${var.tectonic_azure_use_custom_fqdn}"
+  role            = "master"
 }
 
 module "workers" {
@@ -140,6 +146,7 @@ module "workers" {
   kubelet_cni_bin_dir          = "${var.tectonic_calico_network_policy ? "/var/lib/cni/bin" : "" }"
   versions                     = "${var.tectonic_versions}"
   cl_channel                   = "${var.tectonic_cl_channel}"
+  role                         = "worker"
 }
 
 module "dns" {

@@ -96,3 +96,7 @@ variable "tls_peer_crt_pem" {
 variable "container_image" {
   type = "string"
 }
+
+variable "role" {
+  type = "string"
+}

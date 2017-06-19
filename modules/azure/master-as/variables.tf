@@ -112,3 +112,7 @@ variable "versions" {
 variable "cl_channel" {
   type = "string"
 }
+
+variable "role" {
+  type = "string"
+}
