@@ -4,7 +4,7 @@ resource "random_id" "tectonic_master_storage_name" {
 }
 
 resource "azurerm_storage_account" "tectonic_master" {
-  name                = "master${random_id.tectonic_master_storage_name.hex}"
+  name                = "${var.cluster_prefix}${random_id.tectonic_master_storage_name.hex}m"
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
   account_type        = "${var.storage_account_type}"
@@ -29,7 +29,7 @@ resource "azurerm_availability_set" "tectonic_masters" {
 
 resource "azurerm_virtual_machine" "tectonic_master" {
   count                 = "${var.master_count}"
-  name                  = "${var.cluster_name}-master-${count.index}"
+  name                  = "${format("%s-master-%03d", var.cluster_name, count.index + 1)}"
   location              = "${var.location}"
   resource_group_name   = "${var.resource_group_name}"
   network_interface_ids = ["${var.network_interface_ids[count.index]}"]
@@ -52,7 +52,7 @@ resource "azurerm_virtual_machine" "tectonic_master" {
   }
 
   os_profile {
-    computer_name  = "${var.cluster_name}-master-${count.index}"
+    computer_name  = "${format("%s-master-%03d", var.cluster_name, count.index + 1)}"
     admin_username = "core"
     admin_password = ""
 
