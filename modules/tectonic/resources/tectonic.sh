@@ -60,29 +60,29 @@ wait_for_pods() {
   set +e
   echo "Waiting for pods in namespace $1"
   while true; do
-  
+
     out=$($KUBECTL -n "$1" get po -o custom-columns=STATUS:.status.phase,NAME:.metadata.name)
     status=$?
     echo "$out"
-  
+
     if [ "$status" -ne "0" ]; then
       echo "kubectl command failed, retrying in 5 seconds"
       sleep 5
       continue
     fi
-  
+
     # make sure kubectl does not return "no resources found"
     if [ "$(echo "$out" | tail -n +2 | grep -c '^')" -eq 0 ]; then
       echo "no resources were found, retrying in 5 seconds"
       sleep 5
       continue
     fi
-  
+
     stat=$(echo "$out"| tail -n +2 | grep -v '^Running')
     if [ -z "$stat" ]; then
       return
     fi
-  
+
     echo "Pods not available yet, waiting for 5 seconds"
     sleep 5
   done
@@ -263,7 +263,7 @@ if [ "$EXPERIMENTAL" = "true" ]; then
 fi
 
 echo "Creating Container Linux Updater"
-kubectl create -f updater/operators/container-linux-update-operator.yaml
+#kubectl create -f updater/container-linux-update-operator.yaml
 
 # wait for Tectonic pods
 wait_for_pods tectonic-system
