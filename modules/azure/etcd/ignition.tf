@@ -3,6 +3,7 @@ data "ignition_config" "etcd" {
 
   systemd = [
     "${data.ignition_systemd_unit.locksmithd.*.id[count.index]}",
+    "${data.ignition_systemd_unit.update-engine.id}",
     "${data.ignition_systemd_unit.etcd3.*.id[count.index]}",
   ]
 
@@ -123,6 +124,11 @@ data "ignition_user" "core" {
   ssh_authorized_keys = [
     "${file(var.public_ssh_key)}",
   ]
+}
+
+data "ignition_systemd_unit" "update-engine" {
+  name = "update-engine.service"
+  mask = true
 }
 
 data "ignition_systemd_unit" "locksmithd" {
