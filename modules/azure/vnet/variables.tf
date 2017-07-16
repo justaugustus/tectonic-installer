@@ -116,7 +116,3 @@ variable "create_nsg_rules" {
 variable "subnet" {
   type = "string"
 }
-
-variable "base_domain" {
-  type = "string"
-}

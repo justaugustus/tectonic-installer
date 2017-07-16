@@ -1,5 +1,5 @@
 resource "azurerm_lb" "tectonic_etcd_lb" {
-  name                = "${var.tectonic_cluster_name}-etcd-lb"
+  name                = "${var.cluster_name}-etcd-lb"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 
@@ -12,7 +12,7 @@ resource "azurerm_lb" "tectonic_etcd_lb" {
 }
 
 resource "azurerm_lb_rule" "etcd-lb" {
-  name                           = "${var.tectonic_cluster_name}-etcd-lb-rule-client"
+  name                           = "${var.cluster_name}-etcd-lb-rule-client"
   resource_group_name            = "${var.resource_group_name}"
   loadbalancer_id                = "${azurerm_lb.tectonic_etcd_lb.id}"
   backend_address_pool_id        = "${azurerm_lb_backend_address_pool.etcd-lb.id}"
@@ -24,7 +24,7 @@ resource "azurerm_lb_rule" "etcd-lb" {
 }
 
 resource "azurerm_lb_probe" "etcd-lb" {
-  name                = "${var.tectonic_cluster_name}-etcd-lb-probe"
+  name                = "${var.cluster_name}-etcd-lb-probe"
   loadbalancer_id     = "${azurerm_lb.tectonic_etcd_lb.id}"
   resource_group_name = "${var.resource_group_name}"
   protocol            = "Tcp"
@@ -32,7 +32,7 @@ resource "azurerm_lb_probe" "etcd-lb" {
 }
 
 resource "azurerm_lb_backend_address_pool" "etcd-lb" {
-  name                = "${var.tectonic_cluster_name}-etcd-lb-pool"
+  name                = "${var.cluster_name}-etcd-lb-pool"
   resource_group_name = "${var.resource_group_name}"
   loadbalancer_id     = "${azurerm_lb.tectonic_etcd_lb.id}"
 }
@@ -46,7 +46,7 @@ send
 EOF
 
   vars {
-    cluster_name       = "${var.tectonic_cluster_name}"
+    cluster_name       = "${var.cluster_name}"
     base_domain        = "${var.base_domain}"
     etcd_lb_ip_address = "${azurerm_lb.tectonic_etcd_lb.frontend_ip_configuration.0.private_ip_address}"
   }
