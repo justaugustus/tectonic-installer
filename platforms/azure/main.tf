@@ -69,8 +69,8 @@ module "etcd" {
   tls_peer_crt_pem   = "${module.bootkube.etcd_peer_crt_pem}"
   tls_peer_key_pem   = "${module.bootkube.etcd_peer_key_pem}"
 
-  cluster_prefix        = "${module.tectonic.prefix}"
-  role                  = "etcd"
+  cluster_prefix = "${module.tectonic.prefix}"
+  role           = "etcd"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/4084
