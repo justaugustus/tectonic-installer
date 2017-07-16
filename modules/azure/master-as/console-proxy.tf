@@ -106,7 +106,7 @@ sudo systemctl start nginx
 EOF
 
   vars {
-    console_internal_ip_address = "${azurerm_lb.tectonic_lb.frontend_ip_configuration.1.private_ip_address}"
+    console_internal_ip_address = "${var.console_private_ip}"
   }
 }
 
@@ -160,8 +160,8 @@ resource "azurerm_virtual_machine_scale_set" "console-proxy" {
 
     ip_configuration {
       name                                   = "${var.cluster_name}-ProxyIPConfiguration"
-      subnet_id                              = "${var.subnet}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.console-proxy-lb.id}"]
+      subnet_id                              = "${var.subnet_id}"
+      load_balancer_backend_address_pool_ids = ["${var.console_proxy_backend_pool}"]
     }
   }
 

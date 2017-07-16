@@ -134,7 +134,8 @@ data "ignition_systemd_unit" "update-engine" {
 data "ignition_systemd_unit" "locksmithd" {
   count = "${var.etcd_count}"
 
-  name   = "locksmithd.service"
+  name = "locksmithd.service"
+
   #enable = true
   mask = true
 
@@ -177,8 +178,8 @@ Environment="RKT_RUN_ARGS=--volume etcd-ssl,kind=host,source=/etc/ssl/etcd \
 ExecStart=
 ExecStart=/usr/lib/coreos/etcd-wrapper \
   --name=${element(split(";", var.base_domain == "" ?
-          join(";", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count)) :
-          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count)))), count.index)} \
+          join(";", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count)) :
+          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count)))), count.index)} \
   --advertise-client-urls=${var.tls_enabled ? "https" : "http"}://$${COREOS_AZURE_IPV4_DYNAMIC}:2379 \
   ${var.tls_enabled
       ? "--cert-file=/etc/ssl/etcd/server.crt --key-file=/etc/ssl/etcd/server.key --peer-cert-file=/etc/ssl/etcd/peer.crt --peer-key-file=/etc/ssl/etcd/peer.key --peer-trusted-ca-file=/etc/ssl/etcd/ca.crt -peer-client-cert-auth=true"
@@ -190,11 +191,11 @@ ExecStart=/usr/lib/coreos/etcd-wrapper \
     join(",",
       formatlist("%s=${var.tls_enabled ? "https" : "http"}://%s:2380",
         split(";", var.base_domain == "" ?
-          join(";", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count)) :
-          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count)))),
+          join(";", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count)) :
+          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count)))),
         split(";", var.base_domain == "" ?
-          join(";", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count)) :
-          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}-%s", var.const_internal_node_names), 0, var.etcd_count))))
+          join(";", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count)) :
+          join(";", formatlist("%s.${var.base_domain}", slice(formatlist("${var.cluster_name}%s", var.const_internal_node_names), 0, var.etcd_count))))
     ))
   }
 EOF
