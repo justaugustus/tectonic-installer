@@ -32,6 +32,10 @@ variable "location" {
   type = "string"
 }
 
+variable "external_resource_group" {
+  type = "string"
+}
+
 variable "external_vnet_id" {
   type    = "string"
   default = ""
@@ -113,10 +117,7 @@ variable "create_nsg_rules" {
   default = true
 }
 
-variable "subnet" {
-  type = "string"
-}
+#variable "subnet" {
+#  type = "string"
+#}
 
-variable "base_domain" {
-  type = "string"
-}
