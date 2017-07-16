@@ -1,8 +1,12 @@
-variable "cluster_prefix" {
+variable "cluster_name" {
   type = "string"
 }
 
-variable "cluster_name" {
+variable "base_domain" {
+  type = "string"
+}
+
+variable "nameserver" {
   type = "string"
 }
 

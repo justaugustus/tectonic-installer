@@ -1,16 +1,20 @@
 ## Workaround for https://github.com/coreos/tectonic-installer/issues/657
 ## Related to: https://github.com/Microsoft/azure-docs/blob/master/articles/load-balancer/load-balancer-internal-overview.md#limitations
 
+# TODO: Rewrite proxy to use CL instead of RHEL
+# TODO: Move to top-level Azure variable definitions
 variable "proxy_vm_size" {
   type    = "string"
   default = "Standard_DS2_v2"
 }
 
+# TODO: Move to top-level Azure variable definitions
 variable "proxy_count" {
   type    = "string"
   default = "1"
 }
 
+# TODO: Move to top-level Azure variable definitions
 variable proxy_storage_profile_image_reference {
   type = "map"
 
@@ -23,11 +27,14 @@ variable proxy_storage_profile_image_reference {
 }
 
 resource "azurerm_storage_account" "proxy" {
-  name                = "${var.cluster_name}${random_id.tectonic_master_storage_name.hex}p"
+  name                = "${replace("${var.cluster_name}", "-", "")}${var.storage_id}p"
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
-  account_type        = "Standard_LRS"
 
+  # TODO: Parameterize account type
+  account_type = "Standard_LRS"
+
+  # TODO: Add default & extra_tags map
   tags {
     environment = "staging"
   }
@@ -70,7 +77,7 @@ events {
 }
 
 stream {
-    resolver 10.255.0.27;
+    resolver '$${resolver}';
 
     map $protocol $pro_http {
         default '$${console_internal_ip_address}:80';
@@ -106,7 +113,8 @@ sudo systemctl start nginx
 EOF
 
   vars {
-    console_internal_ip_address = "${azurerm_lb.tectonic_lb.frontend_ip_configuration.1.private_ip_address}"
+    resolver                    = "${var.nameserver}"
+    console_internal_ip_address = "${var.console_private_ip}"
   }
 }
 
@@ -116,7 +124,7 @@ resource "local_file" "scripts_proxy_bootstrap" {
 }
 
 resource "null_resource" "scripts_proxy_bootstrap" {
-  depends_on = ["azurerm_storage_account.tectonic_master", "local_file.scripts_proxy_bootstrap"]
+  depends_on = ["azurerm_storage_account.proxy", "local_file.scripts_proxy_bootstrap"]
 
   triggers {
     md5 = "${md5(data.template_file.scripts_proxy_bootstrap.rendered)}"
@@ -160,17 +168,17 @@ resource "azurerm_virtual_machine_scale_set" "console-proxy" {
 
     ip_configuration {
       name                                   = "${var.cluster_name}-ProxyIPConfiguration"
-      subnet_id                              = "${var.subnet}"
-      load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.console-proxy-lb.id}"]
+      subnet_id                              = "${var.subnet_id}"
+      load_balancer_backend_address_pool_ids = ["${var.console_proxy_backend_pool}"]
     }
   }
 
   storage_profile_os_disk {
-    name           = "proxy-osdisk"
-    caching        = "ReadWrite"
-    create_option  = "FromImage"
-    os_type        = "linux"
-    vhd_containers = ["${azurerm_storage_account.tectonic_master.primary_blob_endpoint}${azurerm_storage_container.tectonic_master.name}"]
+    name              = ""
+    managed_disk_type = "${var.storage_type}"
+    create_option     = "FromImage"
+    caching           = "ReadWrite"
+    os_type           = "linux"
   }
 
   storage_profile_image_reference {
@@ -204,8 +212,4 @@ SETTINGS
         }
 PSETTINGS
   }
-
-  #  lifecycle {
-  #    create_before_destroy = true
-  #  }
 }

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-dns-env
+  namespace: node-dns
+  labels:
+    tier: node
+    app: node-dns
+data:
+  BASE_DOMAIN: "${base_domain}"
+  NAMESERVER: "${nameserver}"

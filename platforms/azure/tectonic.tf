@@ -37,16 +37,6 @@ module "bootkube" {
 
   experimental_enabled = "${var.tectonic_experimental}"
 
-  etcd_cert_dns_names = [
-    "${var.tectonic_cluster_name}-etcd-0.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-1.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-2.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-3.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-4.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-5.${var.tectonic_base_domain}",
-    "${var.tectonic_cluster_name}-etcd-6.${var.tectonic_base_domain}",
-  ]
-
   master_count = "${var.tectonic_master_count}"
 }
 
@@ -56,6 +46,10 @@ module "tectonic" {
 
   cluster_name = "${var.tectonic_cluster_name}"
 
+  base_domain = "${var.tectonic_base_domain}"
+  nameserver  = "${var.tectonic_ddns_server}"
+
+  # TODO: Allow private or public LB implementation
   base_address       = "${module.vnet.ingress_fqdn}"
   kube_apiserver_url = "https://${module.vnet.api_fqdn}:443"
 
@@ -102,11 +96,14 @@ module "flannel-vxlan" {
 module "calico-network-policy" {
   source = "../../modules/net/calico-network-policy"
 
+  # UPSTREAM:
+  #kube_apiserver_url = "https://${module.vnet.api_external_fqdn}:443"
   kube_apiserver_url = "https://${module.vnet.api_fqdn}:443"
-  calico_image       = "${var.tectonic_container_images["calico"]}"
-  calico_cni_image   = "${var.tectonic_container_images["calico_cni"]}"
-  cluster_cidr       = "${var.tectonic_cluster_cidr}"
-  enabled            = "${var.tectonic_calico_network_policy}"
+
+  calico_image     = "${var.tectonic_container_images["calico"]}"
+  calico_cni_image = "${var.tectonic_container_images["calico_cni"]}"
+  cluster_cidr     = "${var.tectonic_cluster_cidr}"
+  enabled          = "${var.tectonic_calico_network_policy}"
 
   bootkube_id = "${module.bootkube.id}"
 }
@@ -115,11 +112,11 @@ resource "null_resource" "tectonic" {
   depends_on = ["module.vnet", "module.dns", "module.etcd", "module.masters", "module.bootkube", "module.tectonic", "module.flannel-vxlan", "module.calico-network-policy"]
 
   triggers {
-    api-endpoint = "${module.vnet.api_fqdn}"
+    api-endpoint = "${module.vnet.master_private_ip_addresses[0]}"
   }
 
   connection {
-    host  = "${module.vnet.api_fqdn}"
+    host  = "${module.vnet.master_private_ip_addresses[0]}"
     user  = "core"
     agent = true
   }

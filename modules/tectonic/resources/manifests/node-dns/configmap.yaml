@@ -10,10 +10,6 @@ data:
   node-dns.sh: |
     #!/bin/bash
 
-    # DNS settings
-    BASE_DOMAIN="cdx.vpc.starbucks.net"
-    NAMESERVER=10.255.0.27
-
     # IP addr for the host machine of the Pod
     HOST_IP=`ip -4 a s eth0 | grep inet | awk '{print $2}' | cut -d "/" -f 1`
 

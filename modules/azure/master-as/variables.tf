@@ -31,8 +31,7 @@ variable "base_domain" {
   type = "string"
 }
 
-// The cluster prefix
-variable "cluster_prefix" {
+variable "nameserver" {
   type = "string"
 }
 
@@ -125,6 +124,34 @@ variable "extra_tags" {
   type = "map"
 }
 
-variable "role" {
+variable "subnet_id" {
+  type = "string"
+}
+
+variable "master_ip_addresses" {
+  type = "list"
+}
+
+variable "api_private_ip" {
+  type = "string"
+}
+
+variable "console_private_ip" {
+  type = "string"
+}
+
+variable "console_proxy_private_ip" {
+  type = "string"
+}
+
+variable "api_backend_pool" {
+  type = "string"
+}
+
+variable "console_backend_pool" {
+  type = "string"
+}
+
+variable "console_proxy_backend_pool" {
   type = "string"
 }

@@ -1,5 +1,5 @@
 # NOTE: Across this module, the following syntax is used at various places:
-#   `"${var.existing_certs["ca_crt_path"] == "/dev/null" ? join(" ", tls_private_key.kube-ca.*.private_key_pem) : var.existing_certs["ca_key"]}"`
+#   `"${var.existing_certs["ca_crt_path"] == "/dev/null" ? join(" ", tls_private_key.kube_ca.*.private_key_pem) : var.existing_certs["ca_key"]}"`
 #
 # Due to https://github.com/hashicorp/hil/issues/50, both sides of conditions
 # are evaluated, until one of them is discarded. Unfortunately, the
@@ -12,14 +12,14 @@
 # (and discarded anyways) or the desired value.
 
 # Kubernetes CA (resources/generated/tls/{ca.crt,ca.key}
-resource "tls_private_key" "kube-ca" {
+resource "tls_private_key" "kube_ca" {
   count = "${var.existing_certs["ca_key_path"] == "/dev/null" ? 1 : 0}"
 
   algorithm = "RSA"
   rsa_bits  = "2048"
 }
 
-resource "tls_self_signed_cert" "kube-ca" {
+resource "tls_self_signed_cert" "kube_ca" {
   count = "${var.existing_certs["ca_key_path"] == "/dev/null" ? 1 : 0}"
 
   key_algorithm   = "${tls_private_key.kube_ca.algorithm}"
@@ -41,20 +41,20 @@ resource "tls_self_signed_cert" "kube-ca" {
 }
 
 resource "local_file" "kube-ca-key" {
-  content  = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube-ca.*.private_key_pem) : file(var.existing_certs["ca_key_path"])}"
+  content  = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube_ca.*.private_key_pem) : file(var.existing_certs["ca_key_path"])}"
   filename = "./generated/tls/ca.key"
 }
 
 #This is a ca bundle of the supplied ca.crt and the generated one.
 resource "local_file" "kube-ca-crt" {
-  content  = "${var.existing_certs["ca_cert_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.cert_pem) : "${file(var.existing_certs["ca_cert_path"])}${tls_self_signed_cert.kube-ca.0.cert_pem}"}"
+  content  = "${var.existing_certs["ca_cert_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.cert_pem) : "${file(var.existing_certs["ca_cert_path"])}${tls_self_signed_cert.kube_ca.0.cert_pem}"}"
   filename = "./generated/tls/ca.crt"
 }
 
 #This cert will be used as --client-ca-file any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
 
 resource "local_file" "kube-client-ca" {
-  content  = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
+  content  = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
   filename = "./generated/tls/client-ca.crt"
 }
 
@@ -92,9 +92,9 @@ resource "tls_locally_signed_cert" "apiserver" {
   count            = "${var.existing_certs["apiserver_key_path"] == "/dev/null" ? 1 : 0}"
   cert_request_pem = "${tls_cert_request.apiserver.cert_request_pem}"
 
-  ca_key_algorithm   = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.key_algorithm) : var.existing_certs["ca_key_alg"]}"
-  ca_private_key_pem = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube-ca.*.private_key_pem) : var.existing_certs["ca_key_path"]}"
-  ca_cert_pem        = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
+  ca_key_algorithm   = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.key_algorithm) : var.existing_certs["ca_key_alg"]}"
+  ca_private_key_pem = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube_ca.*.private_key_pem) : var.existing_certs["ca_key_path"]}"
+  ca_cert_pem        = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
 
   validity_period_hours = 8760
 
@@ -151,9 +151,9 @@ resource "tls_cert_request" "kubelet" {
 resource "tls_locally_signed_cert" "kubelet" {
   cert_request_pem = "${tls_cert_request.kubelet.cert_request_pem}"
 
-  ca_key_algorithm   = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.key_algorithm) : var.existing_certs["ca_key_alg"]}"
-  ca_private_key_pem = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube-ca.*.private_key_pem) : file(var.existing_certs["ca_key_path"])}"
-  ca_cert_pem        = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube-ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
+  ca_key_algorithm   = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.key_algorithm) : var.existing_certs["ca_key_alg"]}"
+  ca_private_key_pem = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_private_key.kube_ca.*.private_key_pem) : file(var.existing_certs["ca_key_path"])}"
+  ca_cert_pem        = "${var.existing_certs["ca_key_path"] == "/dev/null" ? join(" ", tls_self_signed_cert.kube_ca.*.cert_pem) : file(var.existing_certs["ca_cert_path"])}"
 
   validity_period_hours = 8760
 
