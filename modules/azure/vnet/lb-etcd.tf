@@ -6,7 +6,7 @@ resource "azurerm_lb" "tectonic_etcd_lb" {
   frontend_ip_configuration {
     name = "default"
 
-    subnet_id                     = "${var.subnet}"
+    subnet_id                     = "${var.external_vnet_id == "" ? join(" ", azurerm_subnet.master_subnet.*.id) : var.external_master_subnet_id }"
     private_ip_address_allocation = "dynamic"
   }
 }

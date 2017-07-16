@@ -116,3 +116,4 @@ variable "create_nsg_rules" {
 #variable "subnet" {
 #  type = "string"
 #}
+
