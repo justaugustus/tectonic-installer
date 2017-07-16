@@ -1,4 +1,4 @@
-data "template_file" "scripts_generate_nsupdate" {
+data "template_file" "scripts_nsupdate_master" {
   template = <<EOF
 #!/bin/bash
 
@@ -28,22 +28,22 @@ EOF
     cluster_name  = "${var.cluster_name}"
     base_domain   = "${var.base_domain}"
 
-    ip_address               = "${azurerm_lb.tectonic_lb.frontend_ip_configuration.0.private_ip_address}"
-    private_ip_addresses     = "${join(" ", azurerm_network_interface.tectonic_master.*.private_ip_address)}"
-    console_proxy_ip_address = "${azurerm_lb.proxy_lb.frontend_ip_configuration.0.private_ip_address}"
+    ip_address               = "${var.api_private_ip}"
+    private_ip_addresses     = "${join(" ", var.master_ip_addresses)}"
+    console_proxy_ip_address = "${var.console_proxy_private_ip}"
   }
 }
 
-resource "local_file" "generate-nsupdate" {
-  content  = "${data.template_file.scripts_generate_nsupdate.rendered}"
+resource "local_file" "generate_nsupdate_master" {
+  content  = "${data.template_file.scripts_nsupdate_master.rendered}"
   filename = "${path.cwd}/generated/dns/generate-k8s-dns.sh"
 }
 
-resource "null_resource" "scripts_nsupdate" {
-  depends_on = ["local_file.generate-nsupdate"]
+resource "null_resource" "scripts_nsupdate_master" {
+  depends_on = ["local_file.generate_nsupdate_master"]
 
   triggers {
-    md5 = "${md5(data.template_file.scripts_generate_nsupdate.rendered)}"
+    md5 = "${md5(data.template_file.scripts_nsupdate_master.rendered)}"
   }
 
   provisioner "local-exec" {

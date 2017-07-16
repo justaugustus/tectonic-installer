@@ -38,7 +38,6 @@ module "vnet" {
   external_nsg_api_id       = "${var.tectonic_azure_external_nsg_api_id}"
   external_nsg_master_id    = "${var.tectonic_azure_external_nsg_master_id}"
   external_nsg_worker_id    = "${var.tectonic_azure_external_nsg_worker_id}"
-  external_resource_group   = "${var.tectonic_azure_external_resource_group}"
   create_nsg_rules          = "${var.tectonic_azure_create_nsg_rules}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
@@ -55,6 +54,7 @@ module "etcd" {
 
   etcd_count            = "${var.tectonic_experimental ? 0 : max(var.tectonic_etcd_count, 1)}"
   base_domain           = "${var.tectonic_base_domain}"
+  cluster_id            = "${module.tectonic.cluster_id}"
   cluster_name          = "${var.tectonic_cluster_name}"
   public_ssh_key        = "${var.tectonic_azure_ssh_key}"
   network_interface_ids = "${module.vnet.etcd_network_interface_ids}"
@@ -100,10 +100,20 @@ module "masters" {
 
   master_count                 = "${var.tectonic_master_count}"
   base_domain                  = "${var.tectonic_base_domain}"
+  nameserver                   = "${var.tectonic_ddns_server}"
+  cluster_id                   = "${module.tectonic.cluster_id}"
   cluster_name                 = "${var.tectonic_cluster_name}"
   public_ssh_key               = "${var.tectonic_azure_ssh_key}"
   virtual_network              = "${module.vnet.vnet_id}"
+  subnet_id                    = "${module.vnet.master_subnet}"
   network_interface_ids        = "${module.vnet.master_network_interface_ids}"
+  master_ip_addresses          = "${module.vnet.master_private_ip_addresses}"
+  api_private_ip               = "${module.vnet.api_private_ip}"
+  console_private_ip           = "${module.vnet.console_private_ip}"
+  console_proxy_private_ip     = "${module.vnet.console_proxy_private_ip}"
+  api_backend_pool             = "${module.vnet.api_backend_pool}"
+  console_backend_pool         = "${module.vnet.console_backend_pool}"
+  console_proxy_backend_pool   = "${module.vnet.console_proxy_backend_pool}"
   kube_image_url               = "${replace(var.tectonic_container_images["hyperkube"],var.tectonic_image_re,"$1")}"
   kube_image_tag               = "${replace(var.tectonic_container_images["hyperkube"],var.tectonic_image_re,"$2")}"
   kubeconfig_content           = "${module.bootkube.kubeconfig}"
@@ -150,7 +160,7 @@ module "workers" {
 }
 
 module "dns" {
-  source = "../../modules/dns/azure"
+  source = "../../modules/dns/cdx"
 
   etcd_count   = "${var.tectonic_experimental ? 0 : var.tectonic_etcd_count}"
   master_count = "${var.tectonic_master_count}"
@@ -162,7 +172,22 @@ module "dns" {
   api_ip_addresses     = "${module.vnet.api_ip_addresses}"
   console_ip_addresses = "${module.vnet.console_ip_addresses}"
 
+  api_private_ip           = "${module.vnet.api_private_ip}"
+  console_private_ip       = "${module.vnet.console_private_ip}"
+  console_proxy_private_ip = "${module.vnet.console_proxy_private_ip}"
+
+  etcd_node_names = "${module.etcd.node_names}"
+
+  # TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
+  etcd_node_1_name = "${module.etcd.etcd_node_1_name}"
+  etcd_node_2_name = "${module.etcd.etcd_node_2_name}"
+  etcd_node_3_name = "${module.etcd.etcd_node_3_name}"
+  etcd_node_1_ip   = "${module.vnet.etcd_node_1_ip}"
+  etcd_node_2_ip   = "${module.vnet.etcd_node_2_ip}"
+  etcd_node_3_ip   = "${module.vnet.etcd_node_3_ip}"
+
   base_domain  = "${var.tectonic_base_domain}"
+  cluster_id   = "${module.tectonic.cluster_id}"
   cluster_name = "${var.tectonic_cluster_name}"
 
   location             = "${var.tectonic_azure_location}"

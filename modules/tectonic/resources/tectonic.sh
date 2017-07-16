@@ -88,12 +88,12 @@ function wait_for_pods() {
   set -e
 }
 
-function wait_for_rolling_update() {
+wait_for_rolling_update() {
   set +e
   local i=0
   echo "Waiting for rolling update in namespace $1"
   while $KUBECTL -n "$1" get po | grep -v STATUS | awk '{print $3}' | grep -v '^Running'; do
-    (( i++ ))
+    i=$((i+1))
     echo "Rolling update not complete yet, waiting for 5 seconds ($i)"
     sleep 5
   done
@@ -122,17 +122,18 @@ wait_for_pods kube-system
 echo "Creating Node DNS to Register Nodes in DNS"
 kubectl create -f node-dns/namespace.yaml
 kubectl create -f node-dns/configmap.yaml
+kubectl create -f node-dns/cm-env.yaml
 kubectl create -f node-dns/daemonset.yaml
 wait_for_pods node-dns
 sleep 20
 
 echo "Performing Rolling Update on APIServer to flush DNS cache for Node DNS"
-kubectl patch ds/kube-apiserver -n kube-system --patch "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+kubectl patch ds/kube-apiserver -n kube-system --patch "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"$(date +'%s')\"}}}}}"
 wait_for_rolling_update kube-system
 sleep 20
 
 echo "Performing Rolling Update on kube-dns to flush DNS cache for Node DNS"
-kubectl patch deploy/kube-dns -n kube-system --patch "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+kubectl patch deploy/kube-dns -n kube-system --patch "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"$(date +'%s')\"}}}}}"
 wait_for_rolling_update kube-system
 sleep 20
 
@@ -262,7 +263,7 @@ if [ "$EXPERIMENTAL" = "true" ]; then
 fi
 
 echo "Creating Container Linux Updater"
-#kubectl create -f updater/container-linux-update-operator.yaml
+kubectl create -f updater/operators/container-linux-update-operator.yaml
 
 # wait for Tectonic pods
 wait_for_pods tectonic-system

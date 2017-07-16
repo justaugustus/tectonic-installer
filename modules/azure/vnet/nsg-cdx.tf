@@ -4,7 +4,7 @@
 
 resource "azurerm_network_security_rule" "cdx_alb_probe" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-alb_probe"
+  name                        = "${var.cluster_name}-alb_probe"
   priority                    = 295
   direction                   = "Inbound"
   access                      = "Allow"
@@ -13,20 +13,20 @@ resource "azurerm_network_security_rule" "cdx_alb_probe" {
   destination_port_range      = "*"
   source_address_prefix       = "AzureLoadBalancer"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 resource "azurerm_network_security_group" "cdx_api" {
-  count               = "${var.external_nsg_api == "" ? 1 : 0}"
-  name                = "${var.tectonic_cluster_name}-api"
+  count               = "${var.external_nsg_api_id == "" ? 1 : 0}"
+  name                = "${var.cluster_name}-api"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 }
 
 resource "azurerm_network_security_rule" "cdx_api_egress" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-api_egress"
+  name                        = "${var.cluster_name}-api_egress"
   priority                    = 1990
   direction                   = "Outbound"
   access                      = "Allow"
@@ -35,13 +35,13 @@ resource "azurerm_network_security_rule" "cdx_api_egress" {
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_api_ingress_https" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-api_ingress_https"
+  name                        = "${var.cluster_name}-api_ingress_https"
   priority                    = 300
   direction                   = "Inbound"
   access                      = "Allow"
@@ -50,20 +50,20 @@ resource "azurerm_network_security_rule" "cdx_api_ingress_https" {
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 resource "azurerm_network_security_group" "cdx_console" {
-  count               = "${var.external_nsg_api == "" ? 1 : 0}"
-  name                = "${var.tectonic_cluster_name}-console"
+  count               = "${var.external_nsg_api_id == "" ? 1 : 0}"
+  name                = "${var.cluster_name}-console"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 }
 
 resource "azurerm_network_security_rule" "cdx_console_egress" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-console_egress"
+  name                        = "${var.cluster_name}-console_egress"
   priority                    = 1995
   direction                   = "Outbound"
   access                      = "Allow"
@@ -72,13 +72,13 @@ resource "azurerm_network_security_rule" "cdx_console_egress" {
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_console_ingress_https" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-console_ingress_https"
+  name                        = "${var.cluster_name}-console_ingress_https"
   priority                    = 305
   direction                   = "Inbound"
   access                      = "Allow"
@@ -87,13 +87,13 @@ resource "azurerm_network_security_rule" "cdx_console_ingress_https" {
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_console_ingress_http" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-console_ingress_http"
+  name                        = "${var.cluster_name}-console_ingress_http"
   priority                    = 310
   direction                   = "Inbound"
   access                      = "Allow"
@@ -102,8 +102,8 @@ resource "azurerm_network_security_rule" "cdx_console_ingress_http" {
   destination_port_range      = "80"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_api}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_api_id}"
 }
 
 ########
@@ -111,15 +111,15 @@ resource "azurerm_network_security_rule" "cdx_console_ingress_http" {
 ########
 
 resource "azurerm_network_security_group" "cdx_etcd" {
-  count               = "${var.external_nsg_etcd == "" ? 1 : 0}"
-  name                = "${var.tectonic_cluster_name}-etcd"
+  count               = "${var.external_nsg_etcd_id == "" ? 1 : 0}"
+  name                = "${var.cluster_name}-etcd"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_egress" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-etcd_egress"
+  name                        = "${var.cluster_name}-etcd_egress"
   priority                    = 2000
   direction                   = "Outbound"
   access                      = "Allow"
@@ -128,13 +128,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_egress" {
   destination_port_range      = "*"
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-etcd_ingress_ssh"
+  name                        = "${var.cluster_name}-etcd_ingress_ssh"
   priority                    = 400
   direction                   = "Inbound"
   access                      = "Allow"
@@ -143,14 +143,14 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_internal}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 # TODO: Add external SSH rule
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_admin" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-etcd_ingress_ssh_admin"
+  name                        = "${var.cluster_name}-etcd_ingress_ssh_admin"
   priority                    = 405
   direction                   = "Inbound"
   access                      = "Allow"
@@ -159,13 +159,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_admin" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_external}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_self" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_ssh_self"
+  name                   = "${var.cluster_name}-etcd_ingress_ssh_self"
   priority               = 410
   direction              = "Inbound"
   access                 = "Allow"
@@ -176,13 +176,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_self" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_services_from_console"
+  name                   = "${var.cluster_name}-etcd_ingress_services_from_console"
   priority               = 415
   direction              = "Inbound"
   access                 = "Allow"
@@ -193,13 +193,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_ssh_from_master" {
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_self" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_client_self"
+  name                   = "${var.cluster_name}-etcd_ingress_client_self"
   priority               = 420
   direction              = "Inbound"
   access                 = "Allow"
@@ -210,13 +210,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_self" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_client_master"
+  name                   = "${var.cluster_name}-etcd_ingress_client_master"
   priority               = 425
   direction              = "Inbound"
   access                 = "Allow"
@@ -227,13 +227,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_master" {
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_client_worker"
+  name                   = "${var.cluster_name}-etcd_ingress_client_worker"
   priority               = 430
   direction              = "Inbound"
   access                 = "Allow"
@@ -244,13 +244,13 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_client_worker" {
   # TODO: Need to allow traffic from workers
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_etcd_ingress_peer" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-etcd_ingress_peer"
+  name                   = "${var.cluster_name}-etcd_ingress_peer"
   priority               = 435
   direction              = "Inbound"
   access                 = "Allow"
@@ -261,8 +261,8 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_peer" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_etcd}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_etcd_id}"
 }
 
 ########
@@ -270,15 +270,15 @@ resource "azurerm_network_security_rule" "cdx_etcd_ingress_peer" {
 ########
 
 resource "azurerm_network_security_group" "cdx_master" {
-  count               = "${var.external_nsg_master == "" ? 1 : 0}"
-  name                = "${var.tectonic_cluster_name}-master"
+  count               = "${var.external_nsg_master_id == "" ? 1 : 0}"
+  name                = "${var.cluster_name}-master"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_egress" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-master_egress"
+  name                        = "${var.cluster_name}-master_egress"
   priority                    = 2005
   direction                   = "Outbound"
   access                      = "Allow"
@@ -287,13 +287,13 @@ resource "azurerm_network_security_rule" "cdx_master_egress" {
   destination_port_range      = "*"
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_ssh" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-master_ingress_ssh"
+  name                        = "${var.cluster_name}-master_ingress_ssh"
   priority                    = 500
   direction                   = "Inbound"
   access                      = "Allow"
@@ -302,14 +302,14 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_ssh" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_internal}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Add external SSH rule
 resource "azurerm_network_security_rule" "cdx_master_ingress_ssh_admin" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-master_ingress_ssh_admin"
+  name                        = "${var.cluster_name}-master_ingress_ssh_admin"
   priority                    = 505
   direction                   = "Inbound"
   access                      = "Allow"
@@ -318,13 +318,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_ssh_admin" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_external}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_flannel" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_flannel"
+  name                   = "${var.cluster_name}-master_ingress_flannel"
   priority               = 510
   direction              = "Inbound"
   access                 = "Allow"
@@ -335,13 +335,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_flannel" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_flannel_from_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_flannel_from_worker"
+  name                   = "${var.cluster_name}-master_ingress_flannel_from_worker"
   priority               = 515
   direction              = "Inbound"
   access                 = "Allow"
@@ -352,15 +352,15 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_flannel_from_worker
   # TODO: Need to allow traffic from worker
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Add rule(s) for Tectonic ingress
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_node_exporter" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_node_exporter"
+  name                   = "${var.cluster_name}-master_ingress_node_exporter"
   priority               = 520
   direction              = "Inbound"
   access                 = "Allow"
@@ -371,13 +371,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_node_exporter" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_node_exporter_from_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_node_exporter_from_worker"
+  name                   = "${var.cluster_name}-master_ingress_node_exporter_from_worker"
   priority               = 525
   direction              = "Inbound"
   access                 = "Allow"
@@ -388,13 +388,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_node_exporter_from_
   # TODO: Need to allow traffic from worker
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_services" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_services"
+  name                   = "${var.cluster_name}-master_ingress_services"
   priority               = 530
   direction              = "Inbound"
   access                 = "Allow"
@@ -405,13 +405,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_services" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_services_from_console" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_services_from_console"
+  name                   = "${var.cluster_name}-master_ingress_services_from_console"
   priority               = 535
   direction              = "Inbound"
   access                 = "Allow"
@@ -422,13 +422,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_services_from_conso
   # TODO: Need to allow traffic from console
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_etcd_lb" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_etcd"
+  name                   = "${var.cluster_name}-master_ingress_etcd"
   priority               = 540
   direction              = "Inbound"
   access                 = "Allow"
@@ -438,13 +438,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_etcd_lb" {
 
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_etcd_self" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_etcd_self"
+  name                   = "${var.cluster_name}-master_ingress_etcd_self"
   priority               = 545
   direction              = "Inbound"
   access                 = "Allow"
@@ -455,13 +455,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_etcd_self" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_bootstrap_etcd" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_bootstrap_etcd"
+  name                   = "${var.cluster_name}-master_ingress_bootstrap_etcd"
   priority               = 550
   direction              = "Inbound"
   access                 = "Allow"
@@ -472,13 +472,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_bootstrap_etcd" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_insecure" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_kubelet_insecure"
+  name                   = "${var.cluster_name}-master_ingress_kubelet_insecure"
   priority               = 555
   direction              = "Inbound"
   access                 = "Allow"
@@ -489,13 +489,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_insecure" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_insecure_from_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_kubelet_insecure_from_worker"
+  name                   = "${var.cluster_name}-master_ingress_kubelet_insecure_from_worker"
   priority               = 560
   direction              = "Inbound"
   access                 = "Allow"
@@ -506,13 +506,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_insecure_fr
   # TODO: Need to allow traffic from worker
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_secure" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_kubelet_secure"
+  name                   = "${var.cluster_name}-master_ingress_kubelet_secure"
   priority               = 565
   direction              = "Inbound"
   access                 = "Allow"
@@ -523,13 +523,13 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_secure" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_secure_from_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_kubelet_secure_from_worker"
+  name                   = "${var.cluster_name}-master_ingress_kubelet_secure_from_worker"
   priority               = 570
   direction              = "Inbound"
   access                 = "Allow"
@@ -540,14 +540,14 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_kubelet_secure_from
   # TODO: Need to allow traffic from worker
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_master_ingress_http" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-master_ingress_http"
+  name                        = "${var.cluster_name}-master_ingress_http"
   priority                    = 575
   direction                   = "Inbound"
   access                      = "Allow"
@@ -556,14 +556,14 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_http" {
   destination_port_range      = "80"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_master_ingress_https" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-master_ingress_https"
+  name                        = "${var.cluster_name}-master_ingress_https"
   priority                    = 580
   direction                   = "Inbound"
   access                      = "Allow"
@@ -572,14 +572,14 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_https" {
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_master_ingress_heapster" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_heapster"
+  name                   = "${var.cluster_name}-master_ingress_heapster"
   priority               = 585
   direction              = "Inbound"
   access                 = "Allow"
@@ -590,14 +590,14 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_heapster" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_master_ingress_heapster_from_worker" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-master_ingress_heapster_from_worker"
+  name                   = "${var.cluster_name}-master_ingress_heapster_from_worker"
   priority               = 590
   direction              = "Inbound"
   access                 = "Allow"
@@ -608,8 +608,8 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_heapster_from_worke
   # TODO: Need to allow traffic from worker
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_master}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_master_id}"
 }
 
 ########
@@ -617,15 +617,15 @@ resource "azurerm_network_security_rule" "cdx_master_ingress_heapster_from_worke
 ########
 
 resource "azurerm_network_security_group" "cdx_worker" {
-  count               = "${var.external_nsg_worker == "" ? 1 : 0}"
-  name                = "${var.tectonic_cluster_name}-worker"
+  count               = "${var.external_nsg_worker_id == "" ? 1 : 0}"
+  name                = "${var.cluster_name}-worker"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_egress" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-worker_egress"
+  name                        = "${var.cluster_name}-worker_egress"
   priority                    = 2010
   direction                   = "Outbound"
   access                      = "Allow"
@@ -634,13 +634,13 @@ resource "azurerm_network_security_rule" "cdx_worker_egress" {
   destination_port_range      = "*"
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_ssh" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-worker_ingress_ssh"
+  name                        = "${var.cluster_name}-worker_ingress_ssh"
   priority                    = 600
   direction                   = "Inbound"
   access                      = "Allow"
@@ -649,14 +649,14 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_ssh" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_internal}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 # TODO: Add external SSH rule
 resource "azurerm_network_security_rule" "cdx_worker_ingress_ssh_admin" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-worker_ingress_ssh_admin"
+  name                        = "${var.cluster_name}-worker_ingress_ssh_admin"
   priority                    = 605
   direction                   = "Inbound"
   access                      = "Allow"
@@ -665,13 +665,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_ssh_admin" {
   destination_port_range      = "22"
   source_address_prefix       = "${var.ssh_network_external}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_services" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_services"
+  name                   = "${var.cluster_name}-worker_ingress_services"
   priority               = 610
   direction              = "Inbound"
   access                 = "Allow"
@@ -682,13 +682,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_services" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_services_from_console" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_services_from_console"
+  name                   = "${var.cluster_name}-worker_ingress_services_from_console"
   priority               = 615
   direction              = "Inbound"
   access                 = "Allow"
@@ -699,13 +699,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_services_from_conso
   # TODO: Need to allow traffic from console
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_flannel" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_flannel"
+  name                   = "${var.cluster_name}-worker_ingress_flannel"
   priority               = 620
   direction              = "Inbound"
   access                 = "Allow"
@@ -716,13 +716,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_flannel" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_flannel_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_flannel_from_master"
+  name                   = "${var.cluster_name}-worker_ingress_flannel_from_master"
   priority               = 625
   direction              = "Inbound"
   access                 = "Allow"
@@ -733,13 +733,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_flannel_from_master
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_insecure" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_kubelet_insecure"
+  name                   = "${var.cluster_name}-worker_ingress_kubelet_insecure"
   priority               = 630
   direction              = "Inbound"
   access                 = "Allow"
@@ -750,13 +750,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_insecure" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_insecure_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_kubelet_insecure_from_master"
+  name                   = "${var.cluster_name}-worker_ingress_kubelet_insecure_from_master"
   priority               = 635
   direction              = "Inbound"
   access                 = "Allow"
@@ -767,13 +767,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_insecure_fr
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_secure" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_kubelet_secure"
+  name                   = "${var.cluster_name}-worker_ingress_kubelet_secure"
   priority               = 640
   direction              = "Inbound"
   access                 = "Allow"
@@ -784,13 +784,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_secure" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_secure_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_kubelet_secure_from_master"
+  name                   = "${var.cluster_name}-worker_ingress_kubelet_secure_from_master"
   priority               = 645
   direction              = "Inbound"
   access                 = "Allow"
@@ -801,13 +801,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_kubelet_secure_from
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_node_exporter" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_node_exporter"
+  name                   = "${var.cluster_name}-worker_ingress_node_exporter"
   priority               = 650
   direction              = "Inbound"
   access                 = "Allow"
@@ -818,13 +818,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_node_exporter" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_node_exporter_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_node_exporter_from_master"
+  name                   = "${var.cluster_name}-worker_ingress_node_exporter_from_master"
   priority               = 655
   direction              = "Inbound"
   access                 = "Allow"
@@ -835,13 +835,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_node_exporter_from_
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_heapster" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_heapster"
+  name                   = "${var.cluster_name}-worker_ingress_heapster"
   priority               = 660
   direction              = "Inbound"
   access                 = "Allow"
@@ -852,13 +852,13 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_heapster" {
   # TODO: Need to allow traffic from self
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 resource "azurerm_network_security_rule" "cdx_worker_ingress_heapster_from_master" {
   count                  = "${var.create_nsg_rules ? 1 : 0}"
-  name                   = "${var.tectonic_cluster_name}-worker_ingress_heapster_from_master"
+  name                   = "${var.cluster_name}-worker_ingress_heapster_from_master"
   priority               = 665
   direction              = "Inbound"
   access                 = "Allow"
@@ -869,8 +869,8 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_heapster_from_maste
   # TODO: Need to allow traffic from master
   source_address_prefix       = "${var.vnet_cidr_block}"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 # TODO: Add rules for self-hosted etcd (etcd-operator)
@@ -878,7 +878,7 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_heapster_from_maste
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_worker_ingress_http" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-worker_ingress_http"
+  name                        = "${var.cluster_name}-worker_ingress_http"
   priority                    = 670
   direction                   = "Inbound"
   access                      = "Allow"
@@ -887,14 +887,14 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_http" {
   destination_port_range      = "80"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }
 
 # TODO: Review NSG
 resource "azurerm_network_security_rule" "cdx_worker_ingress_https" {
   count                       = "${var.create_nsg_rules ? 1 : 0}"
-  name                        = "${var.tectonic_cluster_name}-worker_ingress_https"
+  name                        = "${var.cluster_name}-worker_ingress_https"
   priority                    = 675
   direction                   = "Inbound"
   access                      = "Allow"
@@ -903,6 +903,6 @@ resource "azurerm_network_security_rule" "cdx_worker_ingress_https" {
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
-  resource_group_name         = "${var.external_resource_group == "" ? var.resource_group_name : var.external_resource_group}"
-  network_security_group_name = "${var.external_nsg_worker}"
+  resource_group_name         = "${var.resource_group_name}"
+  network_security_group_name = "${var.external_nsg_worker_id}"
 }

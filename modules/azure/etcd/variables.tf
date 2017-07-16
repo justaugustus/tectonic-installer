@@ -52,7 +52,7 @@ variable "cl_channel" {
 
 variable "const_internal_node_names" {
   type        = "list"
-  default     = ["etcd-0", "etcd-1", "etcd-2", "etcd-3", "etcd-4"]
+  default     = ["e001", "e002", "e003", "e004", "e005"]
   description = "(internal) The list of hostnames assigned to etcd member nodes."
 }
 
@@ -94,8 +94,4 @@ variable "container_image" {
 
 variable "extra_tags" {
   type = "map"
-}
-
-variable "role" {
-  type = "string"
 }

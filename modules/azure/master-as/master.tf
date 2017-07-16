@@ -29,7 +29,7 @@ resource "azurerm_availability_set" "tectonic_masters" {
 
 resource "azurerm_virtual_machine" "tectonic_master" {
   count                 = "${var.master_count}"
-  name                  = "${format("%s-%s-%03d", var.cluster_name, var.role, count.index + 1)}"
+  name                  = "${format("%s%s%03d", var.cluster_name, "m", count.index + 1)}"
   location              = "${var.location}"
   resource_group_name   = "${var.resource_group_name}"
   network_interface_ids = ["${var.network_interface_ids[count.index]}"]
