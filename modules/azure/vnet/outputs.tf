@@ -60,11 +60,23 @@ output "worker_private_ip_addresses" {
   value = ["${azurerm_network_interface.tectonic_worker.*.private_ip_address}"]
 }
 
-output "api_ip_addresses" {
+# TODO: Allow private or public LB implementation
+#output "api_ip_addresses" {
+#  value = ["${azurerm_public_ip.api_ip.ip_address}"]
+#}
+
+# TODO: Allow private or public LB implementation
+#output "console_ip_addresses" {
+#  value = ["${azurerm_public_ip.console_ip.ip_address}"]
+#}
+
+# TODO: Allow private or public LB implementation
+output "api_private_ip" {
   value = ["${azurerm_public_ip.api_ip.ip_address}"]
 }
 
-output "console_ip_addresses" {
+# TODO: Allow private or public LB implementation
+output "console_private_ip" {
   value = ["${azurerm_public_ip.console_ip.ip_address}"]
 }
 

@@ -160,7 +160,7 @@ resource "azurerm_virtual_machine_scale_set" "console-proxy" {
 
     ip_configuration {
       name                                   = "${var.cluster_name}-ProxyIPConfiguration"
-      subnet_id                              = "${var.subnet}"
+      subnet_id                              = "${var.subnet_id}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.console-proxy-lb.id}"]
     }
   }

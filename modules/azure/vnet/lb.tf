@@ -5,13 +5,17 @@ resource "azurerm_lb" "tectonic_lb" {
 
   frontend_ip_configuration {
     name                          = "api"
-    public_ip_address_id          = "${azurerm_public_ip.api_ip.id}"
+    # TODO: Allow private or public LB implementation
+    #public_ip_address_id          = "${azurerm_public_ip.api_ip.id}"
+    subnet_id                     = "${module.vnet.master_subnet}"
     private_ip_address_allocation = "dynamic"
   }
 
   frontend_ip_configuration {
     name                          = "console"
-    public_ip_address_id          = "${azurerm_public_ip.console_ip.id}"
+    # TODO: Allow private or public LB implementation
+    #public_ip_address_id          = "${azurerm_public_ip.console_ip.id}"
+    subnet_id                     = "${module.vnet.master_subnet}"
     private_ip_address_allocation = "dynamic"
   }
 
