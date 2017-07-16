@@ -4,13 +4,13 @@ resource "azurerm_lb" "tectonic_lb" {
   resource_group_name = "${var.resource_group_name}"
 
   frontend_ip_configuration {
-    name = "api"
+    name                          = "api"
     subnet_id                     = "${var.subnet}"
     private_ip_address_allocation = "dynamic"
   }
 
   frontend_ip_configuration {
-    name = "console"
+    name                          = "console"
     subnet_id                     = "${var.subnet}"
     private_ip_address_allocation = "dynamic"
   }
