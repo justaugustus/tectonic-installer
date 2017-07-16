@@ -91,3 +91,15 @@ output "api_fqdn" {
 output "etcd_public_ip" {
   value = "${azurerm_lb.tectonic_etcd_lb.frontend_ip_configuration.0.private_ip_address}"
 }
+
+output "api_backend_pool" {
+  value = "${azurerm_lb_backend_address_pool.api-lb.id}"
+}
+
+output "console_backend_pool" {
+  value = "${azurerm_lb_backend_address_pool.api-lb.id}"
+}
+
+output "console_proxy_backend_pool" {
+  value = "${azurerm_lb_backend_address_pool.console-proxy-lb.id}"
+}

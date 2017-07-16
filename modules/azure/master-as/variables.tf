@@ -132,3 +132,15 @@ variable "role" {
 variable "subnet_id" {
   type = "string"
 }
+
+variable "master_ip_addresses" {
+  type = "list"
+}
+
+variable "api_private_ip" {
+  type = "list"
+}
+
+variable "console_private_ip" {
+  type = "list"
+}
