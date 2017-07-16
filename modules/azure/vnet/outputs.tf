@@ -61,14 +61,18 @@ output "worker_private_ip_addresses" {
 }
 
 # TODO: Allow private or public LB implementation
-#output "api_ip_addresses" {
-#  value = ["${azurerm_public_ip.api_ip.ip_address}"]
-#}
+output "api_ip_addresses" {
+  # UPSTREAM
+  #value = ["${azurerm_public_ip.api_ip.ip_address}"]
+  value = ["${azurerm_lb.tectonic_lb.0.private_ip_address}"]
+}
 
 # TODO: Allow private or public LB implementation
-#output "console_ip_addresses" {
-#  value = ["${azurerm_public_ip.console_ip.ip_address}"]
-#}
+output "console_ip_addresses" {
+  # UPSTREAM
+  #value = ["${azurerm_public_ip.console_ip.ip_address}"]
+  value = ["${azurerm_lb.tectonic_lb.1.private_ip_address}"]
+}
 
 # TODO: Allow private or public LB implementation
 output "api_private_ip" {

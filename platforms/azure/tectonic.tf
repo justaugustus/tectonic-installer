@@ -44,8 +44,10 @@ module "tectonic" {
   source   = "../../modules/tectonic"
   platform = "azure"
 
-  cluster_name = "${var.tectonic_cluster_name}"
+  cluster_name   = "${var.tectonic_cluster_name}"
+  cluster_prefix = "${var.tectonic_cluster_prefix}"
 
+  # TODO: Allow private or public LB implementation
   base_address       = "${module.vnet.ingress_fqdn}"
   kube_apiserver_url = "https://${module.vnet.api_fqdn}:443"
 
@@ -92,6 +94,8 @@ module "flannel-vxlan" {
 module "calico-network-policy" {
   source = "../../modules/net/calico-network-policy"
 
+  # UPSTREAM:
+  #kube_apiserver_url = "https://${module.vnet.api_external_fqdn}:443"
   kube_apiserver_url = "https://${module.vnet.api_fqdn}:443"
   calico_image       = "${var.tectonic_container_images["calico"]}"
   calico_cni_image   = "${var.tectonic_container_images["calico_cni"]}"
