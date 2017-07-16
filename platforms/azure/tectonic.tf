@@ -115,11 +115,11 @@ resource "null_resource" "tectonic" {
   depends_on = ["module.vnet", "module.dns", "module.etcd", "module.masters", "module.bootkube", "module.tectonic", "module.flannel-vxlan", "module.calico-network-policy"]
 
   triggers {
-    api-endpoint = "${module.vnet.api_fqdn}"
+    api-endpoint = "${module.vnet.master_private_ip_addresses[0]}"
   }
 
   connection {
-    host  = "${module.vnet.api_fqdn}"
+    host  = "${module.vnet.master_private_ip_addresses[0]}"
     user  = "core"
     agent = true
   }
