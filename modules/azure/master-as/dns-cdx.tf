@@ -30,7 +30,7 @@ EOF
 
     ip_address               = "${var.api_private_ip}"
     private_ip_addresses     = "${join(" ", var.master_ip_addresses)}"
-    console_proxy_ip_address = "${var.console_private_ip}"
+    console_proxy_ip_address = "${var.console_proxy_private_ip}"
   }
 }
 

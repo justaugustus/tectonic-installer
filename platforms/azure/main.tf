@@ -120,6 +120,7 @@ module "masters" {
   master_ip_addresses          = "${module.vnet.master_private_ip_addresses}"
   api_private_ip               = "${module.vnet.api_private_ip}"
   console_private_ip           = "${module.vnet.console_private_ip}"
+  console_proxy_private_ip     = "${module.vnet.console_proxy_private_ip}"
   api_backend_pool             = "${module.vnet.api_backend_pool}"
   console_backend_pool         = "${module.vnet.console_backend_pool}"
   console_proxy_backend_pool   = "${module.vnet.console_proxy_backend_pool}"

@@ -145,6 +145,10 @@ variable "console_private_ip" {
   type = "string"
 }
 
+variable "console_proxy_private_ip" {
+  type = "string"
+}
+
 variable "api_backend_pool" {
   type = "string"
 }

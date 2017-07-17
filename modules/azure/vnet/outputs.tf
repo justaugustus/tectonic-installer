@@ -76,12 +76,17 @@ output "console_ip_addresses" {
 
 # TODO: Allow private or public LB implementation
 output "api_private_ip" {
-  value = "${azurerm_lb.tectonic_lb.0.private_ip_address}"
+  value = "${azurerm_lb.tectonic_lb.private_ip_address}"
 }
 
 # TODO: Allow private or public LB implementation
 output "console_private_ip" {
-  value = "${azurerm_lb.tectonic_lb.1.private_ip_address}"
+  value = "${azurerm_lb.tectonic_lb.private_ip_address}"
+}
+
+# TODO: Allow private or public LB implementation
+output "console_proxy_private_ip" {
+  value = "${azurerm_lb.proxy_lb.private_ip_address}"
 }
 
 output "ingress_fqdn" {
