@@ -138,11 +138,11 @@ variable "master_ip_addresses" {
 }
 
 variable "api_private_ip" {
-  type = "list"
+  type = "string"
 }
 
 variable "console_private_ip" {
-  type = "list"
+  type = "string"
 }
 
 variable "api_backend_pool" {
