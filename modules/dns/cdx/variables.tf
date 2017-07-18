@@ -61,3 +61,7 @@ variable "worker_count" {
 variable "etcd_node_names" {
   type = "list"
 }
+
+variable "etcd_lb_ip_address" {
+  type = "string"
+}
