@@ -3,21 +3,18 @@ data "template_file" "scripts_generate_nsupdate" {
 #!/bin/bash
 
 ips="$${private_ip_addresses}"
-nodes="$${etcd_node_names}"
-
-n="$${#nodes[*]}"
 
 nsupdate_cmds=$(cat <<END
 update delete $${cluster_name}-etcd.$${base_domain} A
 update add $${cluster_name}-etcd.$${base_domain} 0 A $${etcd_lb_ip_address}
+update delete $${etcd_node_1_name}.$${base_domain} A
+update add $${etcd_node_1_name}.$${base_domain} 0 A $${etcd_node_1_ip}
+update delete $${etcd_node_2_name}.$${base_domain} A
+update add $${etcd_node_2_name}.$${base_domain} 0 A $${etcd_node_2_ip}
+update delete $${etcd_node_3_name}.$${base_domain} A
+update add $${etcd_node_3_name}.$${base_domain} 0 A $${etcd_node_3_ip}
 END
 )
-
-for ((i=0; i<$n; i++)); do
-  nsupdate_cmds="$nsupdate_cmds
-  update delete $${node[$i]} A
-  update add $${nodes[$i]} 0 A $${ips[$i]}"
-done
 
 echo "$nsupdate_cmds" > $${nsupdate_path}
 echo -e "\nsend" >> $${nsupdate_path}
@@ -31,6 +28,12 @@ EOF
     etcd_lb_ip_address = "${var.etcd_lb_ip_address}"
     private_ip_addresses     = "${join(" ", var.etcd_ip_addresses)}"
     etcd_node_names = "${join(" ", var.etcd_node_names)}"
+    etcd_node_1_name = "${var.etcd_node_1_name}"
+    etcd_node_2_name = "${var.etcd_node_2_name}"
+    etcd_node_3_name = "${var.etcd_node_3_name}"
+    etcd_node_1_ip = "${var.etcd_node_1_ip}"
+    etcd_node_2_ip = "${var.etcd_node_2_ip}"
+    etcd_node_3_ip = "${var.etcd_node_3_ip}"
   }
 }
 

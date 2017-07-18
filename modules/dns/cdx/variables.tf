@@ -65,3 +65,27 @@ variable "etcd_node_names" {
 variable "etcd_lb_ip_address" {
   type = "string"
 }
+
+variable "etcd_node_1_name" {
+  type = "string"
+}
+
+variable "etcd_node_2_name" {
+  type = "string"
+}
+
+variable "etcd_node_3_name" {
+  type = "string"
+}
+
+variable "etcd_node_1_ip" {
+  type = "string"
+}
+
+variable "etcd_node_2_ip" {
+  type = "string"
+}
+
+variable "etcd_node_3_ip" {
+  type = "string"
+}

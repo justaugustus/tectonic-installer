@@ -192,6 +192,14 @@ module "dns" {
   etcd_node_names = "${module.etcd.node_names}"
   etcd_lb_ip_address = "${module.vnet.etcd_lb_private_ip}"
 
+  # TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
+  etcd_node_1_name = "${module.etcd.etcd_node_1_name}"
+  etcd_node_2_name = "${module.etcd.etcd_node_2_name}"
+  etcd_node_3_name = "${module.etcd.etcd_node_3_name}"
+  etcd_node_1_ip = "${module.vnet.etcd_node_1_ip}"
+  etcd_node_2_ip = "${module.vnet.etcd_node_2_ip}"
+  etcd_node_3_ip = "${module.vnet.etcd_node_3_ip}"
+
   base_domain  = "${var.tectonic_base_domain}"
   cluster_id   = "${module.tectonic.cluster_id}"
   cluster_name = "${module.tectonic.name}"

@@ -44,6 +44,21 @@ output "etcd_endpoints" {
   value = "${azurerm_network_interface.etcd_nic.*.private_ip_address}"
 }
 
+# TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
+output "etcd_node_1_ip" {
+  value = "${azurerm_network_interface.etcd_nic.0.private_ip_address}"
+}
+
+# TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.# TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
+output "etcd_node_2_ip" {
+  value = "${azurerm_network_interface.etcd_nic.1.private_ip_address}"
+}
+
+# TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
+output "etcd_node_3_ip" {
+  value = "${azurerm_network_interface.etcd_nic.2.private_ip_address}"
+}
+
 output "master_network_interface_ids" {
   value = ["${azurerm_network_interface.tectonic_master.*.id}"]
 }
