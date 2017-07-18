@@ -189,6 +189,9 @@ module "dns" {
   api_ip_addresses     = "${module.vnet.api_ip_addresses}"
   console_ip_addresses = "${module.vnet.console_ip_addresses}"
 
+  etcd_node_names = "${module.etcd.node_names}"
+  etcd_lb_ip_address = "${module.vnet.etcd_lb_private_ip}"
+
   base_domain  = "${var.tectonic_base_domain}"
   cluster_id   = "${module.tectonic.cluster_id}"
   cluster_name = "${module.tectonic.name}"

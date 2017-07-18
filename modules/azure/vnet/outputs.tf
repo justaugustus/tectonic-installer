@@ -89,6 +89,11 @@ output "console_proxy_private_ip" {
   value = "${azurerm_lb.proxy_lb.private_ip_address}"
 }
 
+# TODO: Allow private or public LB implementation
+output "etcd_lb_private_ip" {
+  value = "${azurerm_lb.tectonic_etcd_lb.private_ip_address}"
+}
+
 output "ingress_fqdn" {
   value = "${var.cluster_name}.${var.base_domain}" #"${var.base_domain == "" ? azurerm_public_ip.tectonic_console_ip.fqdn : "${var.cluster_name}.${var.base_domain}"}"
 }
