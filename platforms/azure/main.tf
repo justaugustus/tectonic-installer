@@ -140,9 +140,7 @@ module "masters" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
-
-  use_custom_fqdn = "${var.tectonic_azure_use_custom_fqdn}"
-  role            = "master"
+  role       = "master"
 }
 
 module "workers" {
