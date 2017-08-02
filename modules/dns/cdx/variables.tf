@@ -89,3 +89,11 @@ variable "etcd_node_2_ip" {
 variable "etcd_node_3_ip" {
   type = "string"
 }
+
+variable "cluster_id" {
+  type = "string"
+}
+
+variable "extra_tags" {
+  type = "map"
+}

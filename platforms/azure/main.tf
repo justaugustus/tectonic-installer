@@ -40,7 +40,7 @@ module "vnet" {
   external_nsg_etcd_id      = "${var.tectonic_azure_external_nsg_etcd_id}"
   external_nsg_api_id       = "${var.tectonic_azure_external_nsg_api_id}"
   external_nsg_master_id    = "${var.tectonic_azure_external_nsg_master_id}"
-  external_nsg_worker_id    = "${var.tectonic_azure_external_nsg_worker_id}"]
+  external_nsg_worker_id    = "${var.tectonic_azure_external_nsg_worker_id}"
   external_resource_group   = "${var.tectonic_azure_external_resource_group}"
   create_nsg_rules          = "${var.tectonic_azure_create_nsg_rules}"
 
@@ -138,9 +138,7 @@ module "masters" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
-
-  use_custom_fqdn = "${var.tectonic_azure_use_custom_fqdn}"
-  role            = "master"
+  role       = "master"
 }
 
 module "workers" {
