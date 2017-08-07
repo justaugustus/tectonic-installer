@@ -44,8 +44,7 @@ module "tectonic" {
   source   = "../../modules/tectonic"
   platform = "azure"
 
-  cluster_name   = "${var.tectonic_cluster_name}"
-  cluster_prefix = "${var.tectonic_cluster_prefix}"
+  cluster_name = "${var.tectonic_cluster_name}"
 
   # TODO: Allow private or public LB implementation
   base_address       = "${module.vnet.ingress_fqdn}"

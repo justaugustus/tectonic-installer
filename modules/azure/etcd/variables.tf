@@ -36,11 +36,6 @@ variable "base_domain" {
   type = "string"
 }
 
-// The cluster prefix
-variable "cluster_prefix" {
-  type = "string"
-}
-
 // The name of the cluster.
 variable "cluster_name" {
   type = "string"
@@ -107,8 +102,4 @@ variable "container_image" {
 
 variable "extra_tags" {
   type = "map"
-}
-
-variable "role" {
-  type = "string"
 }
