@@ -60,8 +60,7 @@ module "etcd" {
   etcd_count            = "${var.tectonic_experimental ? 0 : max(var.tectonic_etcd_count, 1)}"
   base_domain           = "${var.tectonic_base_domain}"
   cluster_id            = "${module.tectonic.cluster_id}"
-  cluster_prefix        = "${module.tectonic.prefix}"
-  cluster_name          = "${module.tectonic.name}"
+  cluster_name          = "${var.tectonic_cluster_name}"
   public_ssh_key        = "${var.tectonic_azure_ssh_key}"
   network_interface_ids = "${module.vnet.etcd_network_interface_ids}"
   versions              = "${var.tectonic_versions}"
@@ -77,9 +76,6 @@ module "etcd" {
   tls_peer_key_pem   = "${module.bootkube.etcd_peer_key_pem}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
-
-  cluster_prefix = "${module.tectonic.prefix}"
-  role           = "etcd"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/4084
@@ -111,8 +107,7 @@ module "masters" {
   master_count                 = "${var.tectonic_master_count}"
   base_domain                  = "${var.tectonic_base_domain}"
   cluster_id                   = "${module.tectonic.cluster_id}"
-  cluster_prefix               = "${module.tectonic.prefix}"
-  cluster_name                 = "${module.tectonic.name}"
+  cluster_name                 = "${var.tectonic_cluster_name}"
   public_ssh_key               = "${var.tectonic_azure_ssh_key}"
   virtual_network              = "${module.vnet.vnet_id}"
   subnet_id                    = "${module.vnet.master_subnet}"
@@ -140,7 +135,6 @@ module "masters" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
-  role       = "master"
 }
 
 module "workers" {
@@ -170,8 +164,6 @@ module "workers" {
   cl_channel                   = "${var.tectonic_cl_channel}"
 
   extra_tags = "${var.tectonic_azure_extra_tags}"
-
-  role = "worker"
 }
 
 module "dns" {
@@ -200,7 +192,7 @@ module "dns" {
 
   base_domain  = "${var.tectonic_base_domain}"
   cluster_id   = "${module.tectonic.cluster_id}"
-  cluster_name = "${module.tectonic.name}"
+  cluster_name = "${var.tectonic_cluster_name}"
 
   location             = "${var.tectonic_azure_location}"
   external_dns_zone_id = "${var.tectonic_azure_external_dns_zone_id}"
