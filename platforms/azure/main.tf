@@ -179,8 +179,7 @@ module "dns" {
   api_ip_addresses     = "${module.vnet.api_ip_addresses}"
   console_ip_addresses = "${module.vnet.console_ip_addresses}"
 
-  etcd_node_names    = "${module.etcd.node_names}"
-  etcd_lb_ip_address = "${module.vnet.etcd_lb_private_ip}"
+  etcd_node_names = "${module.etcd.node_names}"
 
   # TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.
   etcd_node_1_name = "${module.etcd.etcd_node_1_name}"

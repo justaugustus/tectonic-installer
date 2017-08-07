@@ -62,10 +62,6 @@ variable "etcd_node_names" {
   type = "list"
 }
 
-variable "etcd_lb_ip_address" {
-  type = "string"
-}
-
 variable "etcd_node_1_name" {
   type = "string"
 }
