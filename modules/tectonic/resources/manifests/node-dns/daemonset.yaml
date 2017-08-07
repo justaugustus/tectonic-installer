@@ -37,6 +37,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        - name: BASE_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: node-dns-env
+              key: BASE_DOMAIN
+        - name: NAMESERVER
+          valueFrom:
+            configMapKeyRef:
+              name: node-dns-env
+              key: NAMESERVER
         volumeMounts:
         - name: etc
           mountPath: /etc/
