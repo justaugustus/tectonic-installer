@@ -47,7 +47,7 @@ module "tectonic" {
   cluster_name = "${var.tectonic_cluster_name}"
 
   base_domain = "${var.tectonic_base_domain}"
-  nameserver = "${var.tectonic_ddns_server}"
+  nameserver  = "${var.tectonic_ddns_server}"
 
   # TODO: Allow private or public LB implementation
   base_address       = "${module.vnet.ingress_fqdn}"

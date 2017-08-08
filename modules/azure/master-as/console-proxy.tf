@@ -30,8 +30,9 @@ resource "azurerm_storage_account" "proxy" {
   name                = "${replace("${var.cluster_name}", "-", "")}${var.storage_id}p"
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
+
   # TODO: Parameterize account type
-  account_type        = "Standard_LRS"
+  account_type = "Standard_LRS"
 
   # TODO: Add default & extra_tags map
   tags {
@@ -172,11 +173,11 @@ resource "azurerm_virtual_machine_scale_set" "console-proxy" {
   }
 
   storage_profile_os_disk {
-    name           = "proxy-osdisk"
+    name              = "proxy-osdisk"
     managed_disk_type = "${var.storage_type}"
-    create_option  = "FromImage"
-    caching        = "ReadWrite"
-    os_type        = "linux"
+    create_option     = "FromImage"
+    caching           = "ReadWrite"
+    os_type           = "linux"
   }
 
   storage_profile_image_reference {

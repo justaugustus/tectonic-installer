@@ -58,6 +58,18 @@ variable "worker_count" {
   type = "string"
 }
 
+variable "api_private_ip" {
+  type = "string"
+}
+
+variable "console_private_ip" {
+  type = "string"
+}
+
+variable "console_proxy_private_ip" {
+  type = "string"
+}
+
 variable "etcd_node_names" {
   type = "list"
 }
