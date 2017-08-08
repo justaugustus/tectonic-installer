@@ -105,6 +105,7 @@ module "masters" {
 
   master_count                 = "${var.tectonic_master_count}"
   base_domain                  = "${var.tectonic_base_domain}"
+  nameserver                   = "${var.tectonic_ddns_server}"
   cluster_id                   = "${module.tectonic.cluster_id}"
   cluster_name                 = "${var.tectonic_cluster_name}"
   public_ssh_key               = "${var.tectonic_azure_ssh_key}"
