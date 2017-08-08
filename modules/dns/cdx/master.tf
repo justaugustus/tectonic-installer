@@ -1,4 +1,4 @@
-data "template_file" "scripts_generate_nsupdate" {
+data "template_file" "scripts_nsupdate_master" {
   template = <<EOF
 #!/bin/bash
 
@@ -34,16 +34,16 @@ EOF
   }
 }
 
-resource "local_file" "generate-nsupdate" {
-  content  = "${data.template_file.scripts_generate_nsupdate.rendered}"
+resource "local_file" "generate_nsupdate_master" {
+  content  = "${data.template_file.scripts_nsupdate_master.rendered}"
   filename = "${path.cwd}/generated/dns/generate-k8s-dns.sh"
 }
 
-resource "null_resource" "scripts_nsupdate" {
-  depends_on = ["local_file.generate-nsupdate"]
+resource "null_resource" "scripts_nsupdate_master" {
+  depends_on = ["local_file.generate_nsupdate_master"]
 
   triggers {
-    md5 = "${md5(data.template_file.scripts_generate_nsupdate.rendered)}"
+    md5 = "${md5(data.template_file.scripts_nsupdate_master.rendered)}"
   }
 
   provisioner "local-exec" {

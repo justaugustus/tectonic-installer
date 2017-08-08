@@ -178,6 +178,10 @@ module "dns" {
   api_ip_addresses     = "${module.vnet.api_ip_addresses}"
   console_ip_addresses = "${module.vnet.console_ip_addresses}"
 
+  api_private_ip           = "${module.vnet.api_private_ip}"
+  console_private_ip       = "${module.vnet.console_private_ip}"
+  console_proxy_private_ip = "${module.vnet.console_proxy_private_ip}"
+
   etcd_node_names = "${module.etcd.node_names}"
 
   # TODO: Remove hardcoded etcd values. This is a workaround for DNS + TLS.

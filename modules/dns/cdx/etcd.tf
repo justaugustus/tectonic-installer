@@ -1,4 +1,4 @@
-data "template_file" "scripts_generate_nsupdate" {
+data "template_file" "scripts_nsupdate_etcd" {
   template = <<EOF
 #!/bin/bash
 
@@ -34,16 +34,16 @@ EOF
   }
 }
 
-resource "local_file" "generate-nsupdate" {
-  content  = "${data.template_file.scripts_generate_nsupdate.rendered}"
+resource "local_file" "generate_nsupdate_etcd" {
+  content  = "${data.template_file.scripts_nsupdate_etcd.rendered}"
   filename = "${path.cwd}/generated/dns/generate-etcd-dns.sh"
 }
 
-resource "null_resource" "scripts_nsupdate" {
-  depends_on = ["local_file.generate-nsupdate"]
+resource "null_resource" "scripts_nsupdate_etcd" {
+  depends_on = ["local_file.generate_nsupdate_etcd"]
 
   triggers {
-    md5 = "${md5(data.template_file.scripts_generate_nsupdate.rendered)}"
+    md5 = "${md5(data.template_file.scripts_nsupdate_etcd.rendered)}"
   }
 
   provisioner "local-exec" {
