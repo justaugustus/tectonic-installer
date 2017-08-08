@@ -77,7 +77,7 @@ events {
 }
 
 stream {
-    resolver 10.255.0.27;
+    resolver '$${resolver}';
 
     map $protocol $pro_http {
         default '$${console_internal_ip_address}:80';
@@ -113,6 +113,7 @@ sudo systemctl start nginx
 EOF
 
   vars {
+    resolver                    = "${var.nameserver}"
     console_internal_ip_address = "${var.console_private_ip}"
   }
 }

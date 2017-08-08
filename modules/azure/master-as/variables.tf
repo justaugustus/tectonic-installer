@@ -31,6 +31,10 @@ variable "base_domain" {
   type = "string"
 }
 
+variable "nameserver" {
+  type = "string"
+}
+
 // The name of the cluster.
 variable "cluster_name" {
   type = "string"
