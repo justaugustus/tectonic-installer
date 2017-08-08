@@ -174,7 +174,7 @@ resource "azurerm_virtual_machine_scale_set" "console-proxy" {
   }
 
   storage_profile_os_disk {
-    name              = "proxy-osdisk"
+    name              = ""
     managed_disk_type = "${var.storage_type}"
     create_option     = "FromImage"
     caching           = "ReadWrite"
