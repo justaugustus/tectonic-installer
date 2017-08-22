@@ -8,6 +8,8 @@ TF_DOCS := $(shell which terraform-docs 2> /dev/null)
 TF_EXAMPLES := $(shell which terraform-examples 2> /dev/null)
 TF_RC := $(TOP_DIR)/.terraformrc
 TF_CMD = TERRAFORM_CONFIG=$(TF_RC) terraform
+TF_STATE_PREFIX = tectonic
+AZURE_STORAGE_KEY := $(shell az storage account keys list -n $(AZURE_STORAGE_ACCOUNT) -g $(STORAGE_ACCOUNT_RG) | jq '.[0].value')
 
 $(info Using build directory [${BUILD_DIR}])
 
@@ -28,7 +30,7 @@ localconfig:
 .PHONY: terraform-init
 terraform-init: installer-env
 ifneq ($(shell $(TF_CMD) version | grep -E "Terraform v0\.1[0-9]\.[0-9]+"), )
-	cd $(BUILD_DIR) && $(TF_CMD) init $(TF_INIT_OPTIONS) $(TOP_DIR)/platforms/$(PLATFORM)
+	cd $(BUILD_DIR) && $(TF_CMD) init -backend-config="storage_account_name=$(AZURE_STORAGE_ACCOUNT)" -backend-config="key=$(TF_STATE_PREFIX)-$(CLUSTER).tfstate" -backend-config="access_key=$(AZURE_STORAGE_KEY)" -get=false -reconfigure $(TOP_DIR)/platforms/$(PLATFORM)
 endif
 
 .PHONY: terraform-get
