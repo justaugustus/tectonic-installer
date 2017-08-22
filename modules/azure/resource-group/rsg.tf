@@ -14,7 +14,12 @@ variable "cluster_name" {
 resource "azurerm_resource_group" "tectonic_cluster" {
   count    = "${var.external_rsg_id == "" ? 1 : 0}"
   location = "${var.azure_location}"
-  name     = "tectonic-cluster-${var.cluster_name}"
+  name     = "${var.cluster_name}"
+
+  tags = "${merge(map(
+    "Name", "tectonic-cluster-${var.cluster_name}",
+    "tectonicClusterID", "${var.cluster_id}"),
+    var.extra_tags)}"
 }
 
 output "name" {
