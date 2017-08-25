@@ -146,7 +146,7 @@ func (p *stringer) Generate(file *generator.FileDescriptor) {
 		p.Out()
 		p.P(`}`)
 		for _, field := range message.Field {
-			if !p.IsMap(field) {
+			if !generator.IsMap(file.FileDescriptorProto, field) {
 				continue
 			}
 			fieldname := p.GetFieldName(message, field)
@@ -197,7 +197,7 @@ func (p *stringer) Generate(file *generator.FileDescriptor) {
 					oneofs[fieldname] = struct{}{}
 				}
 				p.P("`", fieldname, ":`", ` + `, fmtPkg.Use(), `.Sprintf("%v", this.`, fieldname, ") + `,", "`,")
-			} else if p.IsMap(field) {
+			} else if generator.IsMap(file.FileDescriptorProto, field) {
 				mapName := `mapStringFor` + fieldname
 				p.P("`", fieldname, ":`", ` + `, mapName, " + `,", "`,")
 			} else if field.IsMessage() || p.IsGroup(field) {

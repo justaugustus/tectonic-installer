@@ -29,11 +29,10 @@
 package vanity
 
 import (
-	"strings"
-
 	"github.com/gogo/protobuf/gogoproto"
 	"github.com/gogo/protobuf/proto"
 	descriptor "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
+	"strings"
 )
 
 func NotInPackageGoogleProtobuf(file *descriptor.FileDescriptorProto) bool {
@@ -136,10 +135,6 @@ func TurnOnMarshalerAll(file *descriptor.FileDescriptorProto) {
 
 func TurnOnUnmarshalerAll(file *descriptor.FileDescriptorProto) {
 	SetBoolFileOption(gogoproto.E_UnmarshalerAll, true)(file)
-}
-
-func TurnOnStable_MarshalerAll(file *descriptor.FileDescriptorProto) {
-	SetBoolFileOption(gogoproto.E_StableMarshalerAll, true)(file)
 }
 
 func TurnOnSizerAll(file *descriptor.FileDescriptorProto) {

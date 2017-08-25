@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 
 import { commitToServer } from '../server';
 import { commitPhases } from '../actions';
-import { withNav } from '../nav';
 
-export const SubmitDefinition = withNav(connect(
+export const SubmitDefinition = connect(
   state => ({
     phase: state.commitState.phase,
     response: state.commitState.response,
@@ -15,11 +14,11 @@ export const SubmitDefinition = withNav(connect(
   dispatch => ({
     onFinish: (dryRun=false) => dispatch(commitToServer(dryRun)),
   })
-)(({navNext, navPrevious, phase, response, ready, onFinish}) => {
+)(({phase, response, ready, onFinish, navigatePrevious, navigateNext}) => {
   let feature =
     <div className="wiz-giant-button-container">
       <button className="btn btn-primary wiz-giant-button"
-        onClick={() => onFinish(false)}>
+              onClick={() => onFinish(false)}>
         Submit
       </button>
     </div>;
@@ -51,9 +50,9 @@ export const SubmitDefinition = withNav(connect(
     );
     pager = (
       <div className="wiz-form__actions">
-        <button className="btn btn-primary wiz-form__actions__next" onClick={navNext}>
-          Next Step
-        </button>
+        <button className="btn btn-primary wiz-form__actions__next"
+           onClick={navigateNext}
+           >Next Step</button>
       </div>
     );
   }
@@ -69,7 +68,7 @@ export const SubmitDefinition = withNav(connect(
     <div>
       <p>
         { msg }
-        <span> After submission, the definition cannot be updated. Go <a onClick={!inProgress && navPrevious} className={inProgress && 'disabled'}>back</a> to update or make changes.</span>
+        <span> After submission, the definition cannot be updated. Go <a onClick={!inProgress && navigatePrevious} className={inProgress && 'disabled'}>back</a> to update or make changes.</span>
       </p>
       <p>
         You'll be able to download your <a href="https://coreos.com/tectonic/docs/latest/admin/assets-zip.html" target="_blank">assets zip file</a> after the definition is submitted.
@@ -86,7 +85,7 @@ export const SubmitDefinition = withNav(connect(
       {pager}
     </div>
   );
-}));
+});
 SubmitDefinition.canNavigateForward = ({cluster}) => {
   return cluster.ready;
 };

@@ -74,18 +74,15 @@ This package is subject to change, since a use has not been figured out yet.
 package description
 
 import (
-	"bytes"
-	"compress/gzip"
 	"fmt"
 	"github.com/gogo/protobuf/gogoproto"
-	"github.com/gogo/protobuf/proto"
 	descriptor "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"github.com/gogo/protobuf/protoc-gen-gogo/generator"
 )
 
 type plugin struct {
 	*generator.Generator
-	generator.PluginImports
+	used bool
 }
 
 func NewPlugin() *plugin {
@@ -101,16 +98,8 @@ func (p *plugin) Init(g *generator.Generator) {
 }
 
 func (p *plugin) Generate(file *generator.FileDescriptor) {
-	used := false
+	p.used = false
 	localName := generator.FileName(file)
-
-	p.PluginImports = generator.NewPluginImports(p.Generator)
-	descriptorPkg := p.NewImport("github.com/gogo/protobuf/protoc-gen-gogo/descriptor")
-	protoPkg := p.NewImport("github.com/gogo/protobuf/proto")
-	gzipPkg := p.NewImport("compress/gzip")
-	bytesPkg := p.NewImport("bytes")
-	ioutilPkg := p.NewImport("io/ioutil")
-
 	for _, message := range file.Messages() {
 		if !gogoproto.HasDescription(file.FileDescriptorProto, message.DescriptorProto) {
 			continue
@@ -118,18 +107,18 @@ func (p *plugin) Generate(file *generator.FileDescriptor) {
 		if message.DescriptorProto.GetOptions().GetMapEntry() {
 			continue
 		}
-		used = true
+		p.used = true
 		ccTypeName := generator.CamelCaseSlice(message.TypeName())
-		p.P(`func (this *`, ccTypeName, `) Description() (desc *`, descriptorPkg.Use(), `.FileDescriptorSet) {`)
+		p.P(`func (this *`, ccTypeName, `) Description() (desc *descriptor.FileDescriptorSet) {`)
 		p.In()
 		p.P(`return `, localName, `Description()`)
 		p.Out()
 		p.P(`}`)
 	}
 
-	if used {
+	if p.used {
 
-		p.P(`func `, localName, `Description() (desc *`, descriptorPkg.Use(), `.FileDescriptorSet) {`)
+		p.P(`func `, localName, `Description() (desc *descriptor.FileDescriptorSet) {`)
 		p.In()
 		//Don't generate SourceCodeInfo, since it will create too much code.
 
@@ -138,59 +127,19 @@ func (p *plugin) Generate(file *generator.FileDescriptor) {
 			ss = append(ss, f.SourceCodeInfo)
 			f.SourceCodeInfo = nil
 		}
-		b, err := proto.Marshal(p.Generator.AllFiles())
-		if err != nil {
-			panic(err)
-		}
+		s := fmt.Sprintf("%#v", p.Generator.AllFiles())
 		for i, f := range p.Generator.AllFiles().GetFile() {
 			f.SourceCodeInfo = ss[i]
 		}
-		p.P(`d := &`, descriptorPkg.Use(), `.FileDescriptorSet{}`)
-		var buf bytes.Buffer
-		w, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
-		w.Write(b)
-		w.Close()
-		b = buf.Bytes()
-		p.P("var gzipped = []byte{")
-		p.In()
-		p.P("// ", len(b), " bytes of a gzipped FileDescriptorSet")
-		for len(b) > 0 {
-			n := 16
-			if n > len(b) {
-				n = len(b)
-			}
+		p.P(`return `, s)
+		p.Out()
+		p.P(`}`)
+	}
+}
 
-			s := ""
-			for _, c := range b[:n] {
-				s += fmt.Sprintf("0x%02x,", c)
-			}
-			p.P(s)
-
-			b = b[n:]
-		}
-		p.Out()
-		p.P("}")
-		p.P(`r := `, bytesPkg.Use(), `.NewReader(gzipped)`)
-		p.P(`gzipr, err := `, gzipPkg.Use(), `.NewReader(r)`)
-		p.P(`if err != nil {`)
-		p.In()
-		p.P(`panic(err)`)
-		p.Out()
-		p.P(`}`)
-		p.P(`ungzipped, err := `, ioutilPkg.Use(), `.ReadAll(gzipr)`)
-		p.P(`if err != nil {`)
-		p.In()
-		p.P(`panic(err)`)
-		p.Out()
-		p.P(`}`)
-		p.P(`if err := `, protoPkg.Use(), `.Unmarshal(ungzipped, d); err != nil {`)
-		p.In()
-		p.P(`panic(err)`)
-		p.Out()
-		p.P(`}`)
-		p.P(`return d`)
-		p.Out()
-		p.P(`}`)
+func (this *plugin) GenerateImports(file *generator.FileDescriptor) {
+	if this.used {
+		this.P(`import "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"`)
 	}
 }
 
