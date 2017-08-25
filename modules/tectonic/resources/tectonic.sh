@@ -264,7 +264,7 @@ if [ "$EXPERIMENTAL" = "true" ]; then
 fi
 
 echo "Creating Container Linux Updater"
-kubectl create -f updater/operators/container-linux-update-operator.yaml
+#kubectl create -f updater/operators/container-linux-update-operator.yaml
 
 # wait for Tectonic pods
 wait_for_pods tectonic-system
