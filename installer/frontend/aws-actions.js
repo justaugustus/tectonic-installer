@@ -108,20 +108,20 @@ export const TFDestroy = createAction('destroy', awsApis.TFDestroy, true);
 const getDefaultSubnets_ = createAction('subnets', awsApis.getDefaultSubnets);
 
 export const getDefaultSubnets = (body, creds, isNow) => (dispatch, getState) =>
-  getDefaultSubnets_({vpcCIDR: '10.0.0.0/16'}, creds)(dispatch, getState)
-    .then(subnets => {
-      if (isNow && !isNow()) {
-        return;
-      }
-      const batches = [];
-      _.each(subnets.public, ({availabilityZone, instanceCIDR, id}) => {
-        batches.push([`${AWS_CONTROLLER_SUBNETS}.${availabilityZone}`, instanceCIDR]);
-        // TODO: (ggreer) stop resetting this? (ditto for worker subnet ids)
-        batches.push([`${AWS_CONTROLLER_SUBNET_IDS}.${availabilityZone}`, id]);
-      });
-      _.each(subnets.private, ({availabilityZone, instanceCIDR, id}) => {
-        batches.push([`${AWS_WORKER_SUBNETS}.${availabilityZone}`, instanceCIDR]);
-        batches.push([`${AWS_WORKER_SUBNET_IDS}.${availabilityZone}`, id]);
-      });
-      batchSetIn(dispatch, batches);
+  getDefaultSubnets_({vpcCIDR: "10.0.0.0/16"}, creds)(dispatch, getState)
+  .then(subnets => {
+    if (isNow && !isNow()) {
+      return;
+    }
+    const batches = [];
+    _.each(subnets.public, ({availabilityZone, instanceCIDR, id}) => {
+      batches.push([`${AWS_CONTROLLER_SUBNETS}.${availabilityZone}`, instanceCIDR]);
+      // TODO: (ggreer) stop resetting this? (ditto for worker subnet ids)
+      batches.push([`${AWS_CONTROLLER_SUBNET_IDS}.${availabilityZone}`, id]);
     });
+    _.each(subnets.private, ({availabilityZone, instanceCIDR, id}) => {
+      batches.push([`${AWS_WORKER_SUBNETS}.${availabilityZone}`, instanceCIDR]);
+      batches.push([`${AWS_WORKER_SUBNET_IDS}.${availabilityZone}`, id]);
+    });
+    batchSetIn(dispatch, batches);
+  });

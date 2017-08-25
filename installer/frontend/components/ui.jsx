@@ -4,7 +4,6 @@ import { Set as ImmutableSet } from 'immutable';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { withNav } from '../nav';
 import { validate } from '../validate';
 import { readFile } from '../readfile';
 import { toError, toAsyncError, toExtraData, toInFly, toExtraDataInFly, toExtraDataError } from '../utils';
@@ -76,12 +75,12 @@ export const ErrorComponent = props => {
     return <props.ErrorComponent error={error} />;
   }
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return <Alert severity='error'>{error}</Alert>;
   }
   return <span />;
 };
 
-const Field = withNav(connect(
+const Field = connect(
   (state, {id}) => ({isDirty: _.get(state.dirty, id)}),
   dispatch => ({
     markDirty: id => markIDDirty(dispatch, id),
@@ -110,13 +109,6 @@ const Field = withNav(connect(
       elementProps[k] = props[k];
     });
 
-    const onEnterKeyNavigateNext = e => {
-      if (e.keyCode === 13) {
-        e.preventDefault();
-        props.navNext();
-      }
-    };
-
     const nextProps = Object.assign({
       className: fieldClasses,
       value: props.value || '',
@@ -135,7 +127,6 @@ const Field = withNav(connect(
           props.markDirty(props.id);
         }
       },
-      onKeyDown: ['number', 'password', 'text'].includes(props.type) ? onEnterKeyNavigateNext : undefined,
     }, elementProps);
 
     return (
@@ -153,7 +144,7 @@ const Field = withNav(connect(
       </div>
     );
   }
-}));
+});
 
 const makeBooleanField = type => {
   return function booleanField(props) {
@@ -200,7 +191,7 @@ export const Radio = props => {
 export const CheckBox = makeBooleanField('checkbox');
 export const ToggleButton = props => <button className={props.className} style={props.style} onClick={() => props.onValue(!props.value)}>
   {props.value ? 'Hide' : 'Show'}&nbsp;{props.children}
-  <i style={{marginLeft: 7}} className={classNames('fa', {'fa-chevron-up': props.value, 'fa-chevron-down': !props.value})}></i>
+  <i style={{marginLeft: 7}} className={classNames("fa", {"fa-chevron-up": props.value, "fa-chevron-down": !props.value})}></i>
 </button>;
 
 // A textarea/file-upload combo
@@ -222,15 +213,15 @@ export const FileArea = connect(
   const {id, onValue, markDirtyUpload, uploadButtonLabel} = props;
   const handleUpload = (e) => {
     readFile(e.target.files.item(0))
-      .then((value) => {
-        onValue(value);
-      })
-      .catch((msg) => {
-        console.error(msg);
-      })
-      .then(() => {
-        markDirtyUpload(id);
-      });
+    .then((value) => {
+      onValue(value);
+    })
+    .catch((msg) => {
+      console.error(msg);
+    })
+    .then(() => {
+      markDirtyUpload(id);
+    });
     // Reset value so that onChange fires if you pick the same file again.
     e.target.value = null;
   };
@@ -240,8 +231,8 @@ export const FileArea = connect(
       <label className="btn btn-sm btn-link">
         <span className="fa fa-upload"></span>&nbsp;&nbsp;{uploadButtonLabel || 'Upload'} {' '}
         <input style={{display: 'none'}}
-          type="file"
-          onChange={handleUpload} />
+               type="file"
+               onChange={handleUpload} />
       </label>
       <Field {...props} />
     </div>
@@ -493,13 +484,13 @@ export const WithClusterConfig = connect(
     }
     this.safeSetState({inFly: true});
     asyncValidator(value)
-      .then(() => {
-        this.safeSetState({asyncInvalid: undefined}, () => this.setValidation());
-      })
-      .catch(err => {
-        this.safeSetState({asyncInvalid: err}, () => this.setValidation());
-      })
-      .then(() => this.safeSetState({inFly: false}));
+    .then(() => {
+      this.safeSetState({asyncInvalid: undefined}, () => this.setValidation());
+    })
+    .catch(err => {
+      this.safeSetState({asyncInvalid: err}, () => this.setValidation());
+    })
+    .then(() => this.safeSetState({inFly: false}));
   }
 
   componentWillReceiveProps (nextProps) {
@@ -606,26 +597,23 @@ export const PrivateKeyArea = (props) => {
   return <FileArea {...areaProps} />;
 };
 
-export const WaitingLi = ({pending, done, error, cancel, children, substep}) => {
+export const WaitingLi = ({done, error, cancel, children, substep}) => {
   const progressClasses = classNames({
     'wiz-launch-progress__step': !substep,
     'wiz-launch-progress__substep': substep,
-    'wiz-pending-fg': pending,
     'wiz-error-fg': error,
     'wiz-success-fg': done && !error,
-    'wiz-cancel-fg': !done && !error && cancel,
-    'wiz-running-fg': !done && !error && !cancel && !pending,
+    'wiz-running-fg': !done && !error,
   });
   const iconClasses = classNames('fa', 'fa-fw', {
-    'fa-circle-o': pending,
     'fa-exclamation-circle': error,
     'fa-check-circle': done && !error,
     'fa-ban': !done && !error && cancel,
-    'fa-spin fa-circle-o-notch': !done && !error && !cancel && !pending,
+    'fa-spin fa-circle-o-notch': !done && !error && !cancel,
   });
 
   return <li className={progressClasses}>
-    {!substep && <i className={iconClasses} style={{margin: '0 3px 0 -3px'}}></i>}{children}
+    <i className={iconClasses}></i>&nbsp;{children}
   </li>;
 };
 
@@ -676,15 +664,15 @@ export class AsyncSelect extends React.Component {
         <div className={classNames('async-select', props.className)} style={props.style}>
           {props.children}
           <select style={style}
-            id={id}
-            className="async-select--select"
-            value={value}
-            disabled={availableValues.inFly}
-            onChange={e => {
-              const v = e.target.value;
-              props.onValue && props.onValue(v);
-              onChange && onChange(v);
-            }}>
+              id={id}
+              className="async-select--select"
+              value={value}
+              disabled={availableValues.inFly}
+              onChange={e => {
+                const v = e.target.value;
+                props.onValue && props.onValue(v);
+                onChange && onChange(v);
+              }}>
             {disabledValue && <option value="" disabled>{disabledValue}</option>}
             {optionElems}
           </select>
@@ -742,7 +730,7 @@ export class DropdownMixin extends React.PureComponent {
     }
     const {dropdownElement} = this.refs;
 
-    if (event.target === dropdownElement || dropdownElement.contains(event.target)) {
+    if( event.target === dropdownElement || dropdownElement.contains(event.target)) {
       return;
     }
     this.hide();
@@ -790,22 +778,6 @@ export class Dropdown extends DropdownMixin {
           <a className="tectonic-dropdown-menu-title">{header}&nbsp;&nbsp;<i className="fa fa-angle-down" aria-hidden="true"></i></a>
           <ul className="dropdown-menu tectonic-dropdown-menu" style={{display: active ? 'block' : 'none'}}>{children}</ul>
         </div>
-      </div>
-    );
-  }
-}
-
-export class DropdownInline extends DropdownMixin {
-  render() {
-    const {active} = this.state;
-    const {items, header} = this.props;
-
-    return (
-      <div ref="dropdownElement" className="dropdown" onClick={this.toggle} style={{display: 'inline-block'}}>
-        <a>{header}&nbsp;&nbsp;<i className="fa fa-caret-down"></i></a>
-        <ul className="dropdown-menu--dark" style={{display: active ? 'block' : 'none'}}>
-          {items.map(([title, cb], i) => <li className="dropdown-menu--dark__item" key={i} onClick={cb}>{title}</li>)}
-        </ul>
       </div>
     );
   }

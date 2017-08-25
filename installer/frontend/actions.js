@@ -35,6 +35,10 @@ export const loadFactsActionTypes = {
   ERROR: 'LOAD_FACTS_ERROR',
 };
 
+export const navActionTypes = {
+  LOCATION_CHANGE: 'NAV_ACTION_LOCATION_CHANGE',
+};
+
 export const restoreActionTypes = {
   RESTORE_STATE: 'RESTORE_RESTORE_STATE',
 };
@@ -115,7 +119,7 @@ export const __deleteEverything__ = () => {
   [FIELDS, FIELD_TO_DEPS, FIELD_TO_FORM, FORMS, DEFAULT_CLUSTER_CONFIG]
     .forEach(o => _.keys(o).forEach(k => delete o[k]));
 
-  ['error', 'error_async', 'ignore', 'inFly', 'extra']
+  ["error", "error_async", "ignore", "inFly", "extra"]
     .forEach(k => DEFAULT_CLUSTER_CONFIG[k] = {});
 
   return {type: configActionTypes.RESET};

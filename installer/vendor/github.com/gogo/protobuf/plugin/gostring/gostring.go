@@ -177,7 +177,7 @@ func (p *gostring) Generate(file *generator.FileDescriptor) {
 				p.P(`s = append(s, "`, fieldname, `: " + `, fmtPkg.Use(), `.Sprintf("%#v", this.`, fieldname, `) + ",\n")`)
 				p.Out()
 				p.P(`}`)
-			} else if p.IsMap(field) {
+			} else if generator.IsMap(file.FileDescriptorProto, field) {
 				m := p.GoMapType(nil, field)
 				mapgoTyp, keyField, keyAliasField := m.GoType, m.KeyField, m.KeyAliasField
 				keysName := `keysFor` + fieldname

@@ -7,18 +7,18 @@ const send = (obj) => {
 
   try {
     const ga = window[window.GoogleAnalyticsObject || 'ga'];
-    if (typeof ga !== 'function') {
-      throw new Error('ga is not a function!');
+    if (typeof ga === 'function') {
+      if (obj.type === 'pageview') {
+        ga('TectonicInstaller.send', 'pageview', obj.page);
+        ga('CoreOS.send', 'pageview', obj.page);
+      } else if (obj.type === 'event') {
+        const {category, action, label, value} = obj;
+        ga('TectonicInstaller.send', 'event', category, action, label, value);
+        ga('CoreOS.send', 'event', category, action, label, value);
+      }
     }
-    if (obj.type === 'pageview') {
-      ga('TectonicInstaller.send', 'pageview', obj.page);
-      ga('CoreOS.send', 'pageview', obj.page);
-    } else if (obj.type === 'event') {
-      const {category, action, label, value} = obj;
-      ga('TectonicInstaller.send', 'event', category, action, label, value);
-      ga('CoreOS.send', 'event', category, action, label, value);
-    }
-  } catch(err) {
+  }
+  catch(err) {
     console.error(`Failed to send GA event: ${err.message}`);
   }
 };
@@ -44,15 +44,7 @@ export const TectonicGA = {
     send({ type: 'pageview', page});
   },
 
-  sendError: (message, stack='') => {
-    send({
-      type: 'event',
-      category: 'installerError',
-      label: `${GIT_TAG} ${message} Stack: ${stack}`,
-    });
-  },
-
-  sendEvent: (category, action, label = '', platform = '') => {
+  sendEvent: (category, action, label = "", platform = "") => {
     send({
       type: 'event',
       category, action,
@@ -60,7 +52,7 @@ export const TectonicGA = {
     });
   },
 
-  sendDocsEvent: (platform = '') => {
+  sendDocsEvent: (platform = "") => {
     send({
       type: 'event',
       category: 'Installer Docs Link',
