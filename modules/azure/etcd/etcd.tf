@@ -13,18 +13,20 @@ resource "azurerm_availability_set" "etcd" {
 
 resource "azurerm_virtual_machine" "etcd_node" {
   count                 = "${var.etcd_count}"
-  name                  = "${format("%s%s%03d", var.cluster_name, "e", count.index + 1)}"
+  name                  = "${var.cluster_name}-etcd-${count.index}"
   location              = "${var.location}"
   resource_group_name   = "${var.resource_group_name}"
   network_interface_ids = ["${var.network_interface_ids[count.index]}"]
   vm_size               = "${var.vm_size}"
   availability_set_id   = "${azurerm_availability_set.etcd.id}"
 
+  delete_os_disk_on_termination = true
+
   storage_image_reference {
     publisher = "CoreOS"
     offer     = "CoreOS"
     sku       = "${var.cl_channel}"
-    version   = "1465.6.0"
+    version   = "1465.8.0"
   }
 
   storage_os_disk {
@@ -36,7 +38,7 @@ resource "azurerm_virtual_machine" "etcd_node" {
   }
 
   os_profile {
-    computer_name  = "${format("%s%s%03d", var.cluster_name, "e", count.index + 1)}"
+    computer_name  = "${var.cluster_name}-etcd-${count.index}"
     admin_username = "core"
     admin_password = ""
     custom_data    = "${base64encode("${data.ignition_config.etcd.*.rendered[count.index]}")}"

@@ -12,24 +12,22 @@ resource "azurerm_availability_set" "tectonic_workers" {
 
 resource "azurerm_virtual_machine" "tectonic_worker" {
   count                 = "${var.worker_count}"
-  name                  = "${format("%s%s%03d", var.cluster_name, "w", count.index + 1)}"
+  name                  = "${var.cluster_name}-worker-${count.index}"
   location              = "${var.location}"
   resource_group_name   = "${var.resource_group_name}"
   network_interface_ids = ["${var.network_interface_ids[count.index]}"]
   vm_size               = "${var.vm_size}"
   availability_set_id   = "${azurerm_availability_set.tectonic_workers.id}"
 
-  # boot_diagnostics {
-  #   enabled     = true
-  #   storage_uri = "${azurerm_storage_account.tectonic_worker.primary_blob_endpoint}"
-  # }
+  delete_os_disk_on_termination = true
 
   storage_image_reference {
     publisher = "CoreOS"
     offer     = "CoreOS"
     sku       = "${var.cl_channel}"
-    version   = "1465.6.0"
+    version   = "1465.8.0"
   }
+
   storage_os_disk {
     name              = "worker-${count.index}-os-${var.storage_id}"
     managed_disk_type = "${var.storage_type}"
@@ -37,12 +35,14 @@ resource "azurerm_virtual_machine" "tectonic_worker" {
     caching           = "ReadWrite"
     os_type           = "linux"
   }
+
   os_profile {
-    computer_name  = "${format("%s%s%03d", var.cluster_name, "w", count.index + 1)}"
+    computer_name  = "${var.cluster_name}-worker-${count.index}"
     admin_username = "core"
     admin_password = ""
     custom_data    = "${base64encode("${data.ignition_config.worker.rendered}")}"
   }
+
   os_profile_linux_config {
     disable_password_authentication = true
 
@@ -51,10 +51,12 @@ resource "azurerm_virtual_machine" "tectonic_worker" {
       key_data = "${file(var.public_ssh_key)}"
     }
   }
+
   tags = "${merge(map(
     "Name", "${var.cluster_name}-worker-${count.index}",
     "tectonicClusterID", "${var.cluster_id}"),
     var.extra_tags)}"
+
   lifecycle {
     ignore_changes = ["storage_data_disk"]
   }
