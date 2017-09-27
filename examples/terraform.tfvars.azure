@@ -20,11 +20,6 @@ tectonic_azure_client_secret = ""
 // for available environments.
 // tectonic_azure_cloud_environment = "AZUREPUBLICCLOUD"
 
-// If set to true, all required rules will be created for all Network
-// Security Groups. Otherwise, no rules are added to the NSGs and are expected
-// to already exist.
-tectonic_azure_create_nsg_rules = true
-
 // (optional) Storage account type for the etcd node(s). Example: Premium_LRS.
 // Using Premium storage is constrained by the of instance specified in 'tectonic_azure_etcd_vm_size'.
 // See https://docs.microsoft.com/en-us/azure/storage/storage-premium-storage#supported-vms
